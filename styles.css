@@ -1,0 +1,142 @@
+/* Minimal, rápido y accesible */
+:root {
+  --bg: #f7f7f9;
+  --fg: #0e0f12;
+  --muted: #5e6067;
+  --card: #ffffff;
+  --border: #e7e8ec;
+  --focus: #8ab4f8;
+  --youtube: #ff0033;
+  --spotify: #1db954;
+  --apple: #000000;
+  /* Gradientes sutiles */
+  --grad-start: #7c8aff;
+  --grad-end: #9bf0e1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1014;
+    --fg: #f5f7fb;
+    --muted: #a4a7ae;
+    --card: #15161a;
+    --border: #2a2c31;
+    --focus: #4c8dff;
+    --apple: #f5f7fb;
+    --grad-start: #4a67ff;
+    --grad-end: #3fe0c2;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font: 16px/1.5 'Inter', ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji;
+  background:
+    radial-gradient(80% 60% at 20% 0%, color-mix(in srgb, var(--grad-start) 20%, transparent) 0%, transparent 60%),
+    radial-gradient(80% 60% at 80% 0%, color-mix(in srgb, var(--grad-end) 18%, transparent) 0%, transparent 60%),
+    var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.wrap {
+  min-height: calc(100dvh - 64px);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 64px 24px 24px;
+  display: grid;
+  place-items: center;
+  gap: 32px;
+}
+
+.hero { text-align: center; }
+.avatar {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--grad-start) 16%, transparent),
+    0 10px 30px rgba(0,0,0,.18);
+}
+.title {
+  font-size: clamp(40px, 7vw, 72px);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  line-height: 1.05;
+}
+.title span {
+  background: linear-gradient(90deg, var(--grad-start), var(--grad-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.tagline {
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(14px, 2.6vw, 18px);
+}
+
+.links {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  width: min(520px, 100%);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--grad-end) 6%, transparent), color-mix(in srgb, var(--grad-start) 4%, transparent)),
+    var(--card);
+  color: var(--fg);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+.btn.youtube .icon { color: var(--youtube); }
+.btn.spotify .icon { color: var(--spotify); }
+.btn.apple .icon { color: var(--apple); }
+
+/* Sutileza de marca en el borde/halo */
+.btn.youtube:hover { border-color: color-mix(in srgb, var(--youtube) 40%, var(--border)); }
+.btn.spotify:hover { border-color: color-mix(in srgb, var(--spotify) 40%, var(--border)); }
+.btn.apple:hover { border-color: color-mix(in srgb, var(--apple) 40%, var(--border)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+}
+
+.footer {
+  height: 64px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
