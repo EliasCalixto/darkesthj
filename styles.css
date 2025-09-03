@@ -1,30 +1,35 @@
 /* Minimal, rápido y accesible */
 :root {
-  --bg: #f7f7f9;
-  --fg: #0e0f12;
-  --muted: #5e6067;
-  --card: #ffffff;
-  --border: #e7e8ec;
-  --focus: #8ab4f8;
-  --youtube: #ff0033;
+  /* Tema monocromático oscuro */
+  --bg: #0a0b0d;          /* fondo casi negro */
+  --fg: #d6dae1;          /* texto legible en gris claro */
+  --muted: #9aa1aa;       /* texto secundario */
+  --card: #101218;        /* superficies */
+  --border: #1a1e26;      /* bordes sutiles */
+  --focus: #cfd5de;       /* foco accesible en gris */
+  --youtube: #ff0033;     /* colores de marca, sin tocar */
   --spotify: #1db954;
-  --apple: #000000;
-  /* Gradientes sutiles */
-  --grad-start: #7c8aff;
-  --grad-end: #9bf0e1;
+  --apple: #f5f7fb;
+  /* Accentos en escala de grises (para halos/sombras) */
+  --grad-start: #2a2e36;
+  --grad-end: #3a3f49;
+  /* Texto principal (H1) en gris muy oscuro, ligeramente más claro que el fondo */
+  --title: #14171c;
 }
 
+/* El sitio permanece oscuro también si el SO prefiere claro */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f1014;
-    --fg: #f5f7fb;
-    --muted: #a4a7ae;
-    --card: #15161a;
-    --border: #2a2c31;
-    --focus: #4c8dff;
+    --bg: #0a0b0d;
+    --fg: #d6dae1;
+    --muted: #9aa1aa;
+    --card: #101218;
+    --border: #1a1e26;
+    --focus: #cfd5de;
     --apple: #f5f7fb;
-    --grad-start: #4a67ff;
-    --grad-end: #3fe0c2;
+    --grad-start: #2a2e36;
+    --grad-end: #3a3f49;
+    --title: #14171c;
   }
 }
 
@@ -33,13 +38,29 @@ html, body { height: 100%; }
 body {
   margin: 0;
   font: 16px/1.5 'Inter', ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji;
+  /* Fondo en escala de grises con viñeta sutil y realce superior */
   background:
-    radial-gradient(80% 60% at 20% 0%, color-mix(in srgb, var(--grad-start) 20%, transparent) 0%, transparent 60%),
-    radial-gradient(80% 60% at 80% 0%, color-mix(in srgb, var(--grad-end) 18%, transparent) 0%, transparent 60%),
+    radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,.035) 0%, transparent 60%),
+    radial-gradient(100% 80% at 50% 100%, rgba(0,0,0,.35) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0) 50%),
     var(--bg);
   color: var(--fg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Overlay de grilla sutil para textura (solo grises) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: .22;
+  mix-blend-mode: overlay;
 }
 
 .wrap {
@@ -61,7 +82,7 @@ body {
   border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
   box-shadow:
     0 0 0 6px color-mix(in srgb, var(--grad-start) 16%, transparent),
-    0 10px 30px rgba(0,0,0,.18);
+    0 10px 30px rgba(0,0,0,.30);
 }
 .title {
   font-size: clamp(40px, 7vw, 72px);
@@ -70,10 +91,15 @@ body {
   line-height: 1.05;
 }
 .title span {
-  background: linear-gradient(90deg, var(--grad-start), var(--grad-end));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  /* Texto principal: un solo color gris muy oscuro */
+  color: var(--title);
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  /* Detalle cool sutil, sin color */
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.02),
+    0 8px 30px rgba(0,0,0,.55);
 }
 .tagline {
   margin: 0;
@@ -98,7 +124,7 @@ body {
   border-radius: 999px;
   border: 1px solid var(--border);
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--grad-end) 6%, transparent), color-mix(in srgb, var(--grad-start) 4%, transparent)),
+    linear-gradient(180deg, color-mix(in srgb, var(--grad-end) 10%, transparent), color-mix(in srgb, var(--grad-start) 8%, transparent)),
     var(--card);
   color: var(--fg);
   text-decoration: none;
