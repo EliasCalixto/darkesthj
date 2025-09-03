@@ -63,6 +63,22 @@ body::before {
   mix-blend-mode: overlay;
 }
 
+/* Imagen de fondo sutil integrada con el tema */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url('assets/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* Muy sutil y mezclado con el fondo */
+  opacity: .06;
+  mix-blend-mode: soft-light;
+  filter: grayscale(1) contrast(.9) brightness(.8);
+}
+
 .wrap {
   min-height: calc(100dvh - 64px);
   max-width: 720px;
@@ -147,14 +163,10 @@ body::before {
   flex-shrink: 0;
   fill: currentColor;
 }
-.btn.youtube .icon { color: var(--youtube); }
-.btn.spotify .icon { color: var(--spotify); }
-.btn.apple .icon { color: var(--apple); }
+.btn .icon { color: var(--fg); }
 
-/* Sutileza de marca en el borde/halo */
-.btn.youtube:hover { border-color: color-mix(in srgb, var(--youtube) 40%, var(--border)); }
-.btn.spotify:hover { border-color: color-mix(in srgb, var(--spotify) 40%, var(--border)); }
-.btn.apple:hover { border-color: color-mix(in srgb, var(--apple) 40%, var(--border)); }
+/* Sin borde de color al pasar el mouse */
+.btn:hover { border-color: var(--border); }
 
 @media (prefers-reduced-motion: reduce) {
   .btn { transition: none; }
