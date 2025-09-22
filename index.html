@@ -3,63 +3,142 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>darkesthj — Artist</title>
-    <meta name="description" content="Página oficial de darkesthj. Escúchalo en YouTube, Spotify y Apple Music." />
+    <title>darkesthj — Universo creativo</title>
+    <meta name="description" content="Explora las páginas oficiales de darkesthj: música, visuales y más proyectos en camino." />
     <meta name="theme-color" content="#0f0f10" />
-    <!-- Favicon & app icons -->
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#14171c" />
     <link rel="apple-touch-icon" href="assets/artist-spotify.jpg" />
-    <!-- Tipografías: Inter (variable) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
-    <!-- Open Graph / Twitter (sin imagen por ahora) -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="darkesthj — artista" />
-    <meta property="og:description" content="Escúchalo en YouTube, Spotify y Apple Music." />
+    <meta property="og:title" content="darkesthj — universo creativo" />
+    <meta property="og:description" content="Navega por las páginas oficiales de darkesthj: música y más." />
     <meta property="og:image" content="assets/artist-spotify.jpg" />
     <meta name="twitter:card" content="summary" />
     <link rel="preload" href="styles.css" as="style" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <main class="wrap" role="main">
-      <header class="hero">
-        <img class="avatar" src="assets/artist-spotify.jpg" alt="Foto de perfil de darkesthj" width="160" height="160" />
-        <h1 class="title"><span>darkesthj</span></h1>
-        <p class="tagline">Artist & Producer</p>
+  <body class="landing">
+    <div class="landing-wrap">
+      <header class="landing-header">
+        <p class="landing-label">darkesthj</p>
+        <h1 class="landing-title">Universo creativo en expansión</h1>
+        <p class="landing-subtitle">Explora mis proyectos actuales y futuros. Usa las flechas para navegar.</p>
       </header>
 
-      <nav class="links" aria-label="Enlaces de escucha">
-        <a class="btn youtube" href="https://www.youtube.com/@darkesthj" target="_blank" rel="noopener noreferrer" aria-label="YouTube de darkesthj">
-          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
-            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-          </svg>
-          YouTube
-        </a>
-        <a class="btn spotify" href="https://open.spotify.com/artist/4O1lEcAIIK039J4iOba1wr" target="_blank" rel="noopener noreferrer" aria-label="Spotify de darkesthj">
-          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
-            <path d="M12 0C5.371 0 0 5.371 0 12s5.371 12 12 12 12-5.371 12-12S18.629 0 12 0zm5.49 17.34a.749.749 0 0 1-1.03.22c-2.73-1.67-6.17-2.05-10.22-1.13a.75.75 0 1 1-.33-1.47c4.45-1.01 8.24-.58 11.26 1.26.35.21.46.66.29 1.04zm1.41-3.16a.75.75 0 0 1-1.03.28c-3.12-1.92-7.88-2.48-11.57-1.36a.75.75 0 1 1-.44-1.44c4.2-1.28 9.39-.66 12.94 1.49.42.26.55.82.29 1.24zm.12-3.26a.75.75 0 0 1-1.03.29c-3.64-2.17-9.65-2.37-13.12-1.3a.75.75 0 0 1-.44-1.44c3.97-1.22 10.61-.98 14.79 1.49.5.3.66.95.36 1.45z"/>
-          </svg>
-          Spotify
-        </a>
-        <a class="btn apple" href="https://music.apple.com/pe/artist/darkesthj/1835796146" target="_blank" rel="noopener noreferrer" aria-label="Apple Music de darkesthj">
-          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
-            <path d="M23.994 6.124a9.23 9.23 0 00-.24-2.19c-.317-1.31-1.062-2.31-2.18-3.043a5.022 5.022 0 00-1.877-.726 10.496 10.496 0 00-1.564-.15c-.04-.003-.083-.01-.124-.013H5.986c-.152.01-.303.017-.455.026-.747.043-1.49.123-2.193.4-1.336.53-2.3 1.452-2.865 2.78-.192.448-.292.925-.363 1.408-.056.392-.088.785-.1 1.18 0 .032-.007.062-.01.093v12.223c.01.14.017.283.027.424.05.815.154 1.624.497 2.373.65 1.42 1.738 2.353 3.234 2.801.42.127.856.187 1.293.228.555.053 1.11.06 1.667.06h11.03a12.5 12.5 0 001.57-.1c.822-.106 1.596-.35 2.295-.81a5.046 5.046 0 001.88-2.207c.186-.42.293-.87.37-1.324.113-.675.138-1.358.137-2.04-.002-3.8 0-7.595-.003-11.393zm-6.423 3.99v5.712c0 .417-.058.827-.244 1.206-.29.59-.76.962-1.388 1.14-.35.1-.706.157-1.07.173-.95.045-1.773-.6-1.943-1.536a1.88 1.88 0 011.038-2.022c.323-.16.67-.25 1.018-.324.378-.082.758-.153 1.134-.24.274-.063.457-.23.51-.516a.904.904 0 00.02-.193c0-1.815 0-3.63-.002-5.443a.725.725 0 00-.026-.185c-.04-.15-.15-.243-.304-.234-.16.01-.318.035-.475.066-.76.15-1.52.303-2.28.456l-2.325.47-1.374.278c-.016.003-.032.01-.048.013-.277.077-.377.203-.39.49-.002.042 0 .086 0 .13-.002 2.602 0 5.204-.003 7.805 0 .42-.047.836-.215 1.227-.278.64-.77 1.04-1.434 1.233-.35.1-.71.16-1.075.172-.96.036-1.755-.6-1.92-1.544-.14-.812.23-1.685 1.154-2.075.357-.15.73-.232 1.108-.31.287-.06.575-.116.86-.177.383-.083.583-.323.6-.714v-.15c0-2.96 0-5.922.002-8.882 0-.123.013-.25.042-.37.07-.285.273-.448.546-.518.255-.066.515-.112.774-.165.733-.15 1.466-.296 2.2-.444l2.27-.46c.67-.134 1.34-.27 2.01-.403.22-.043.442-.088.663-.106.31-.025.523.17.554.482.008.073.012.148.012.223.002 1.91.002 3.822 0 5.732z"/>
-          </svg>
-          Apple Music
-        </a>
-      </nav>
-    </main>
+      <main class="landing-main" role="main">
+        <section class="carousel" aria-label="Páginas de darkesthj">
+          <button class="carousel-control prev" type="button" aria-label="Página anterior">
+            <span aria-hidden="true">‹</span>
+          </button>
+          <div class="carousel-frame">
+            <ul class="carousel-track" role="list">
+              <li class="carousel-slide is-active" data-state="live">
+                <a class="slide-card" href="/music/">
+                  <p class="slide-eyebrow live">Disponible</p>
+                  <h2 class="slide-title">Music</h2>
+                  <p class="slide-description">Escucha mis lanzamientos, playlists y colaboraciones.</p>
+                  <span class="slide-link">Entrar →</span>
+                </a>
+              </li>
+              <li class="carousel-slide" data-state="soon">
+                <div class="slide-card is-disabled" aria-disabled="true">
+                  <p class="slide-eyebrow soon">Próximamente</p>
+                  <h2 class="slide-title">Visuals</h2>
+                  <p class="slide-description">Visualizers, arte y material detrás de cámaras.</p>
+                  <span class="slide-link">En construcción</span>
+                </div>
+              </li>
+              <li class="carousel-slide" data-state="soon">
+                <div class="slide-card is-disabled" aria-disabled="true">
+                  <p class="slide-eyebrow soon">Próximamente</p>
+                  <h2 class="slide-title">Live Sets</h2>
+                  <p class="slide-description">Sets en vivo, sesiones y remezclas exclusivas.</p>
+                  <span class="slide-link">En construcción</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <button class="carousel-control next" type="button" aria-label="Página siguiente">
+            <span aria-hidden="true">›</span>
+          </button>
+        </section>
 
-    <footer class="footer">
-      <small>© <span id="year"></span> darkesthj</small>
-    </footer>
+        <div class="carousel-footer">
+          <p class="carousel-status" role="status" aria-live="polite">1 de 3 — Music</p>
+          <div class="carousel-dots" aria-label="Selecciona página">
+            <button class="dot is-active" type="button" aria-pressed="true" aria-label="Music">1</button>
+            <button class="dot" type="button" aria-pressed="false" aria-label="Visuals">2</button>
+            <button class="dot" type="button" aria-pressed="false" aria-label="Live Sets">3</button>
+          </div>
+        </div>
+      </main>
+
+      <footer class="landing-footer">
+        <nav class="landing-links" aria-label="Redes sociales">
+          <a href="https://www.youtube.com/@darkesthj" target="_blank" rel="noopener noreferrer">YouTube</a>
+          <a href="https://open.spotify.com/artist/4O1lEcAIIK039J4iOba1wr" target="_blank" rel="noopener noreferrer">Spotify</a>
+          <a href="https://music.apple.com/pe/artist/darkesthj/1835796146" target="_blank" rel="noopener noreferrer">Apple Music</a>
+        </nav>
+        <small>© <span id="year"></span> darkesthj</small>
+      </footer>
+    </div>
 
     <script>
-      // Año automático y respeto a usuarios con reducción de movimiento
-      document.getElementById('year').textContent = new Date().getFullYear();
+      const yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      const track = document.querySelector('.carousel-track');
+      if (track) {
+        const slides = Array.from(track.children);
+        if (!slides.length) return;
+        const prevBtn = document.querySelector('.carousel-control.prev');
+        const nextBtn = document.querySelector('.carousel-control.next');
+        const status = document.querySelector('.carousel-status');
+        const dots = Array.from(document.querySelectorAll('.carousel-dots .dot'));
+        let currentIndex = 0;
+
+        const update = (index, { focus = false } = {}) => {
+          currentIndex = (index + slides.length) % slides.length;
+          const offset = currentIndex * -100;
+          track.style.setProperty('--offset', `${offset}%`);
+
+          slides.forEach((slide, i) => {
+            slide.classList.toggle('is-active', i === currentIndex);
+          });
+
+          dots.forEach((dot, i) => {
+            const isSelected = i === currentIndex;
+            dot.classList.toggle('is-active', isSelected);
+            dot.setAttribute('aria-pressed', String(isSelected));
+          });
+
+          const activeSlide = slides[currentIndex];
+          const title = activeSlide.querySelector('.slide-title')?.textContent?.trim() ?? '';
+          if (status) status.textContent = `${currentIndex + 1} de ${slides.length} — ${title}`;
+
+          if (focus) {
+            const focusable = activeSlide.querySelector('a, button, [tabindex="0"]');
+            focusable?.focus({ preventScroll: true });
+          }
+        };
+
+        prevBtn?.addEventListener('click', () => update(currentIndex - 1, { focus: true }));
+        nextBtn?.addEventListener('click', () => update(currentIndex + 1, { focus: true }));
+
+        dots.forEach((dot, i) => {
+          dot.addEventListener('click', () => update(i, { focus: true }));
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'ArrowLeft') update(currentIndex - 1, { focus: true });
+          if (event.key === 'ArrowRight') update(currentIndex + 1, { focus: true });
+        });
+
+        update(0);
+      }
     </script>
   </body>
-  </html>
+</html>
