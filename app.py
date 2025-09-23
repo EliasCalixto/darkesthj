@@ -42,16 +42,13 @@ SLIDES: tuple[Slide, ...] = (
         image_alt="Foto de perfil de darkesthj",
     ),
     Slide(
-        title="Visuals",
-        description="Visualizers, arte y material detrás de cámaras.",
-        status="soon",
-        cta="En construcción",
-    ),
-    Slide(
-        title="Live Sets",
-        description="Sets en vivo, sesiones y remezclas exclusivas.",
-        status="soon",
-        cta="En construcción",
+        title="EasyTech",
+        description="Landing pages, portafolios y automatizaciones que convierten.",
+        status="live",
+        cta="Explorar →",
+        endpoint="easytech",
+        image="assets/easytech-logo.svg",
+        image_alt="Logo EasyTech",
     ),
 )
 
@@ -81,6 +78,12 @@ def landing():
 def music():
     releases = get_latest_releases()
     return render_template("music.html", releases=releases)
+
+
+@app.route("/easytech/")
+def easytech():
+    year = datetime.now().year
+    return render_template("easytech.html", current_year=year)
 
 
 APPLE_ARTIST_ID = "1835796146"

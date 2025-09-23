@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EasyTech — Soluciones digitales a medida</title>
+    <meta name="description" content="En EasyTech creamos portafolios web, landing pages y automatizaciones para hacer crecer tu negocio." />
+    <meta name="theme-color" content="#0c1324" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/easytech-logo.png') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body class="page-easytech">
+    <header class="et-topbar">
+      <div class="et-brand">
+        <img src="{{ url_for('static', filename='assets/easytech-logo.png') }}" alt="Logo EasyTech" class="et-logo" width="64" height="64" />
+        <div>
+          <span class="et-brand-name">EasyTech</span>
+          <span class="et-brand-tag">Soluciones tecnológicas</span>
+        </div>
+      </div>
+      <a class="et-cta" href="#contacto">Solicitar proyecto</a>
+    </header>
+
+    <main class="et-main" role="main">
+      <section class="et-hero">
+        <div class="et-hero-copy">
+          <h1>Brindamos soluciones digitales que impulsan tu marca</h1>
+          <p>Creamos portafolios profesionales, landing pages de alto impacto y automatizaciones de procesos.</p>
+          <div class="et-hero-actions">
+            <a class="et-cta" href="#servicios">Ver servicios</a>
+            <a class="et-secondary" href="https://instagram.com/easytechpe" target="_blank" rel="noopener noreferrer">Escríbenos</a>
+          </div>
+        </div>
+        <div class="et-hero-stats">
+          <div>
+            <strong>7 días</strong>
+            <span>Tiempo promedio de entrega</span>
+          </div>
+          <div>
+            <strong>100%</strong>
+            <span>Clientes satisfechos</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="et-services" id="servicios" aria-label="Servicios de EasyTech">
+        <header class="et-section-header">
+          <p class="et-eyebrow">Oferta principal</p>
+          <h2>Soluciones diseñadas para profesionales, freelancers y negocios</h2>
+          <p>Acompañamos a personas y equipos que no quieren preocuparse por la tecnología. Nosotros diseñamos, construimos y lanzamos tu presencia digital completa —con precios accesibles y soporte en cada paso.</p>
+        </header>
+
+        <div class="et-service-grid">
+          <article class="et-card" aria-label="Portafolios Web">
+            <div class="et-card-copy">
+              <p class="et-eyebrow">Portafolios</p>
+              <h3>Portafolios Web</h3>
+              <p>Perfecto profesionales y creativos que necesitan un sitio profesional sin complicaciones.</p>
+              <ul>
+                <li>Diseño personalizado y redacción orientada a tu perfil</li>
+                <li>Nos encargamos del dominio, hosting y soporte</li>
+                <li>Entrega en 7 días con guía para compartir</li>
+              </ul>
+              <a class="et-cta" href="https://instagram.com/easytechpe" target="_blank" rel="noopener noreferrer">Quiero mi portafolio</a>
+            </div>
+          </article>
+
+          <article class="et-card" aria-label="Landing Pages">
+            <div class="et-card-copy">
+              <p class="et-eyebrow">Conversiones</p>
+              <h3>Landing Pages</h3>
+              <p>Ideal para freelancers y negocios pequeños que buscan captar leads o vender un servicio con rapidez.</p>
+              <ul>
+                <li>Estructura enfocada en conversión y confianza</li>
+                <li>Integración con formularios y WhatsApp.</li>
+                <li>Planes flexibles con precios hasta 40% más bajos</li>
+              </ul>
+              <a class="et-cta" href="https://instagram.com/easytechpe" target="_blank" rel="noopener noreferrer">Potenciar mi campaña</a>
+            </div>
+          </article>
+
+          <article class="et-card" aria-label="Automatizaciones">
+            <div class="et-card-copy">
+              <p class="et-eyebrow">Automatización</p>
+              <h3>Automatizaciones</h3>
+              <p>Para equipos que desean ahorrar horas en tareas repetitivas. Configuramos todo y te explicamos cómo usarlo.</p>
+              <ul>
+                <li>Scripts a medida</li>
+                <li>Dashboards automáticos y reportes en tu correo</li>
+                <li>Entrenamiento y soporte para tu equipo</li>
+              </ul>
+              <a class="et-cta" href="https://instagram.com/easytechpe" target="_blank" rel="noopener noreferrer">Automatizar mi negocio</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="et-benefits" aria-label="Por qué elegir EasyTech">
+        <div class="et-benefit-card">
+          <h3>Proceso claro</h3>
+          <p>Recibes un roadmap con entregables y checkpoints semanales para mantener control absoluto del proyecto.</p>
+        </div>
+        <div class="et-benefit-card">
+          <h3>Diseño + tecnología</h3>
+          <p>Unimos identidad visual, copywriting y desarrollo robusto para garantizar resultados medibles.</p>
+        </div>
+        <div class="et-benefit-card">
+          <h3>Soporte continuo</h3>
+          <p>Incluimos soporte posterior al lanzamiento y opciones de mantenimiento mensuales según tus necesidades.</p>
+        </div>
+      </section>
+
+      <section class="et-contact" id="contacto" aria-label="Contacto EasyTech">
+        <div class="et-contact-card">
+          <h2>¿Listo para lanzar tu proyecto?</h2>
+          <p>Agenda una llamada exploratoria gratuita y recibe una propuesta personalizada en 24&nbsp;horas.</p>
+          <div class="et-contact-actions">
+            <a class="et-cta" href="https://instagram.com/easytechpe" target="_blank" rel="noopener noreferrer">Contactanos por Instagram</a>
+            <button class="et-secondary" type="button" data-copy-email>Escríbenos por correo</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="et-footer">
+      <small>© {{ current_year }} EasyTech. Impulsamos negocios con tecnología.</small>
+    </footer>
+
+    <div class="et-toast" role="status" aria-live="polite" hidden>Correo copiado: easytechsolutionscontact@gmail.com</div>
+
+    <script>
+      const etCarousel = document.querySelector('[data-et-carousel]');
+      if (etCarousel) {
+        const viewport = etCarousel.querySelector('.et-carousel-viewport');
+        const track = etCarousel.querySelector('.et-carousel-track');
+        const prev = etCarousel.querySelector('[data-direction="prev"]');
+        const next = etCarousel.querySelector('[data-direction="next"]');
+        const items = Array.from(track.children);
+        let current = 0;
+
+        const update = (index) => {
+          current = (index + items.length) % items.length;
+          const offset = current * -100;
+          track.style.setProperty('--et-offset', `${offset}%`);
+          items.forEach((item, i) => {
+            item.classList.toggle('is-active', i === current);
+          });
+        };
+
+        const handle = (dir) => update(current + (dir === 'next' ? 1 : -1));
+
+        prev?.addEventListener('click', () => handle('prev'));
+        next?.addEventListener('click', () => handle('next'));
+
+        viewport?.addEventListener('scroll', () => {
+          const index = Math.round(viewport.scrollLeft / viewport.clientWidth);
+          current = Math.min(Math.max(index, 0), items.length - 1);
+        });
+
+        update(0);
+      }
+
+      const copyBtn = document.querySelector('[data-copy-email]');
+      const toast = document.querySelector('.et-toast');
+      if (copyBtn && toast) {
+        const email = 'easytechsolutionscontact@gmail.com';
+        const showToast = () => {
+          toast.hidden = false;
+          toast.classList.add('is-visible');
+          setTimeout(() => {
+            toast.classList.remove('is-visible');
+            toast.hidden = true;
+          }, 2600);
+        };
+
+        copyBtn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(email);
+            showToast();
+          } catch (error) {
+            window.open(`mailto:${email}?subject=Proyecto%20EasyTech`, '_blank');
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
