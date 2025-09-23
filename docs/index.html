@@ -144,16 +144,24 @@
           }
         };
 
-        prevBtn?.addEventListener('click', () => update(currentIndex - 1, { focus: true }));
-        nextBtn?.addEventListener('click', () => update(currentIndex + 1, { focus: true }));
+        let auto = setInterval(() => update(currentIndex + 1), 6000);
+
+        const nudge = (step) => {
+          clearInterval(auto);
+          update(step, { focus: true });
+          auto = setInterval(() => update(currentIndex + 1), 6000);
+        };
+
+        prevBtn?.addEventListener('click', () => nudge(currentIndex - 1));
+        nextBtn?.addEventListener('click', () => nudge(currentIndex + 1));
 
         dots.forEach((dot, i) => {
-          dot.addEventListener('click', () => update(i, { focus: true }));
+          dot.addEventListener('click', () => nudge(i));
         });
 
         document.addEventListener('keydown', (event) => {
-          if (event.key === 'ArrowLeft') update(currentIndex - 1, { focus: true });
-          if (event.key === 'ArrowRight') update(currentIndex + 1, { focus: true });
+          if (event.key === 'ArrowLeft') nudge(currentIndex - 1);
+          if (event.key === 'ArrowRight') nudge(currentIndex + 1);
         });
 
         update(0);
