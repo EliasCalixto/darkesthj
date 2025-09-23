@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>darkesthj — Universo creativo</title>
+    <meta name="description" content="Explora las páginas oficiales de darkesthj: música, visuales y más proyectos en camino." />
+    <meta name="theme-color" content="#0f0f10" />
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='assets/favicon.svg') }}" />
+    <link rel="mask-icon" href="{{ url_for('static', filename='assets/safari-pinned-tab.svg') }}" color="#14171c" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/artist-spotify.jpg') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="darkesthj — universo creativo" />
+    <meta property="og:description" content="Navega por las páginas oficiales de darkesthj: música y más." />
+    <meta property="og:image" content="{{ url_for('static', filename='assets/artist-spotify.jpg') }}" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="preload" href="{{ url_for('static', filename='styles.css') }}" as="style" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body class="landing">
+    <div class="landing-wrap">
+      <header class="landing-header">
+        <p class="landing-label">darkesthj</p>
+        <h1 class="landing-title"></h1>
+        <p class="landing-subtitle">"an unexamined life is not worth living"</p>
+      </header>
+
+      <main class="landing-main" role="main">
+        <section class="carousel" aria-label="Páginas de darkesthj">
+          <button class="carousel-control prev" type="button" aria-label="Página anterior">
+            <span aria-hidden="true">‹</span>
+          </button>
+          <div class="carousel-frame">
+            <ul class="carousel-track" role="list">
+              {% for slide in slides %}
+                <li class="carousel-slide{% if loop.first %} is-active{% endif %}" data-state="{{ slide.status }}">
+                  {% set has_art = slide.image is not none %}
+                  {% set card_classes = 'slide-card' + (' has-art' if has_art else '') %}
+                  {% if slide.href %}
+                    <a class="{{ card_classes }}" href="{{ slide.href }}">
+                  {% else %}
+                    <div class="{{ card_classes }} is-disabled" aria-disabled="true">
+                  {% endif %}
+                      <div class="slide-card__body">
+                        <p class="slide-eyebrow {{ slide.status }}">{{ 'Disponible' if slide.status == 'live' else 'Próximamente' }}</p>
+                        <h2 class="slide-title">{{ slide.title }}</h2>
+                        <p class="slide-description">{{ slide.description }}</p>
+                        <span class="slide-link">{{ slide.cta }}</span>
+                      </div>
+                      {% if has_art %}
+                        <div class="slide-card__media">
+                          <img src="{{ slide.image }}" alt="{{ slide.image_alt or slide.title }}" width="320" height="320" loading="lazy" />
+                        </div>
+                      {% endif %}
+                  {% if slide.href %}
+                    </a>
+                  {% else %}
+                    </div>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <button class="carousel-control next" type="button" aria-label="Página siguiente">
+            <span aria-hidden="true">›</span>
+          </button>
+        </section>
+
+        <div class="carousel-footer">
+          <p class="carousel-status" role="status" aria-live="polite">1 de {{ slides|length }} — {{ slides[0].title }}</p>
+          <div class="carousel-dots" aria-label="Selecciona página">
+            {% for slide in slides %}
+              <button class="dot{% if loop.first %} is-active{% endif %}" type="button" aria-pressed="{{ 'true' if loop.first else 'false' }}" aria-label="{{ slide.title }}">{{ loop.index }}</button>
+            {% endfor %}
+          </div>
+        </div>
+      </main>
+
+      <footer class="landing-footer">
+        <nav class="landing-links" aria-label="Redes sociales">
+          <a href="https://www.youtube.com/@darkesthj" target="_blank" rel="noopener noreferrer">YouTube</a>
+          <a href="https://open.spotify.com/artist/4O1lEcAIIK039J4iOba1wr" target="_blank" rel="noopener noreferrer">Spotify</a>
+          <a href="https://music.apple.com/pe/artist/darkesthj/1835796146" target="_blank" rel="noopener noreferrer">Apple Music</a>
+        </nav>
+        <small>© <span id="year"></span> darkesthj</small>
+      </footer>
+    </div>
+
+    <script>
+      const yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      const track = document.querySelector('.carousel-track');
+      if (track) {
+        const slides = Array.from(track.children);
+        if (!slides.length) return;
+        const prevBtn = document.querySelector('.carousel-control.prev');
+        const nextBtn = document.querySelector('.carousel-control.next');
+        const status = document.querySelector('.carousel-status');
+        const dots = Array.from(document.querySelectorAll('.carousel-dots .dot'));
+        let currentIndex = 0;
+
+        const update = (index, { focus = false } = {}) => {
+          currentIndex = (index + slides.length) % slides.length;
+          const offset = currentIndex * -100;
+          track.style.setProperty('--offset', `${offset}%`);
+
+          slides.forEach((slide, i) => {
+            slide.classList.toggle('is-active', i === currentIndex);
+          });
+
+          dots.forEach((dot, i) => {
+            const isSelected = i === currentIndex;
+            dot.classList.toggle('is-active', isSelected);
+            dot.setAttribute('aria-pressed', String(isSelected));
+          });
+
+          const activeSlide = slides[currentIndex];
+          const title = activeSlide.querySelector('.slide-title')?.textContent?.trim() ?? '';
+          if (status) status.textContent = `${currentIndex + 1} de ${slides.length} — ${title}`;
+
+          if (focus) {
+            const focusable = activeSlide.querySelector('a, button, [tabindex="0"]');
+            focusable?.focus({ preventScroll: true });
+          }
+        };
+
+        prevBtn?.addEventListener('click', () => update(currentIndex - 1, { focus: true }));
+        nextBtn?.addEventListener('click', () => update(currentIndex + 1, { focus: true }));
+
+        dots.forEach((dot, i) => {
+          dot.addEventListener('click', () => update(i, { focus: true }));
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'ArrowLeft') update(currentIndex - 1, { focus: true });
+          if (event.key === 'ArrowRight') update(currentIndex + 1, { focus: true });
+        });
+
+        update(0);
+      }
+    </script>
+  </body>
+</html>

@@ -6,19 +6,19 @@
     <title>darkesthj — Universo creativo</title>
     <meta name="description" content="Explora las páginas oficiales de darkesthj: música, visuales y más proyectos en camino." />
     <meta name="theme-color" content="#0f0f10" />
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-    <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#14171c" />
-    <link rel="apple-touch-icon" href="assets/artist-spotify.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/static/assets/favicon.svg" />
+    <link rel="mask-icon" href="/static/assets/safari-pinned-tab.svg" color="#14171c" />
+    <link rel="apple-touch-icon" href="/static/assets/artist-spotify.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
     <meta property="og:type" content="website" />
     <meta property="og:title" content="darkesthj — universo creativo" />
     <meta property="og:description" content="Navega por las páginas oficiales de darkesthj: música y más." />
-    <meta property="og:image" content="assets/artist-spotify.jpg" />
+    <meta property="og:image" content="/static/assets/artist-spotify.jpg" />
     <meta name="twitter:card" content="summary" />
-    <link rel="preload" href="styles.css" as="style" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="preload" href="/static/styles.css" as="style" />
+    <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body class="landing">
     <div class="landing-wrap">
@@ -35,30 +35,46 @@
           </button>
           <div class="carousel-frame">
             <ul class="carousel-track" role="list">
-              <li class="carousel-slide is-active" data-state="live">
-                <a class="slide-card" href="/music/">
-                  <p class="slide-eyebrow live">Disponible</p>
-                  <h2 class="slide-title">Music</h2>
-                  <p class="slide-description">Escucha mis lanzamientos, playlists y colaboraciones.</p>
-                  <span class="slide-link">Entrar →</span>
-                </a>
-              </li>
-              <li class="carousel-slide" data-state="soon">
-                <div class="slide-card is-disabled" aria-disabled="true">
-                  <p class="slide-eyebrow soon">Próximamente</p>
-                  <h2 class="slide-title">Visuals</h2>
-                  <p class="slide-description">Visualizers, arte y material detrás de cámaras.</p>
-                  <span class="slide-link">En construcción</span>
-                </div>
-              </li>
-              <li class="carousel-slide" data-state="soon">
-                <div class="slide-card is-disabled" aria-disabled="true">
-                  <p class="slide-eyebrow soon">Próximamente</p>
-                  <h2 class="slide-title">Live Sets</h2>
-                  <p class="slide-description">Sets en vivo, sesiones y remezclas exclusivas.</p>
-                  <span class="slide-link">En construcción</span>
-                </div>
-              </li>
+              
+                <li class="carousel-slide is-active" data-state="live">
+                  
+                    <a class="slide-card" href="/music/">
+                  
+                      <p class="slide-eyebrow live">Disponible</p>
+                      <h2 class="slide-title">Music</h2>
+                      <p class="slide-description">Escucha mis lanzamientos, playlists y colaboraciones.</p>
+                      <span class="slide-link">Entrar →</span>
+                  
+                    </a>
+                  
+                </li>
+              
+                <li class="carousel-slide" data-state="soon">
+                  
+                    <div class="slide-card is-disabled" aria-disabled="true">
+                  
+                      <p class="slide-eyebrow soon">Próximamente</p>
+                      <h2 class="slide-title">Visuals</h2>
+                      <p class="slide-description">Visualizers, arte y material detrás de cámaras.</p>
+                      <span class="slide-link">En construcción</span>
+                  
+                    </div>
+                  
+                </li>
+              
+                <li class="carousel-slide" data-state="soon">
+                  
+                    <div class="slide-card is-disabled" aria-disabled="true">
+                  
+                      <p class="slide-eyebrow soon">Próximamente</p>
+                      <h2 class="slide-title">Live Sets</h2>
+                      <p class="slide-description">Sets en vivo, sesiones y remezclas exclusivas.</p>
+                      <span class="slide-link">En construcción</span>
+                  
+                    </div>
+                  
+                </li>
+              
             </ul>
           </div>
           <button class="carousel-control next" type="button" aria-label="Página siguiente">
@@ -69,9 +85,13 @@
         <div class="carousel-footer">
           <p class="carousel-status" role="status" aria-live="polite">1 de 3 — Music</p>
           <div class="carousel-dots" aria-label="Selecciona página">
-            <button class="dot is-active" type="button" aria-pressed="true" aria-label="Music">1</button>
-            <button class="dot" type="button" aria-pressed="false" aria-label="Visuals">2</button>
-            <button class="dot" type="button" aria-pressed="false" aria-label="Live Sets">3</button>
+            
+              <button class="dot is-active" type="button" aria-pressed="true" aria-label="Music">1</button>
+            
+              <button class="dot" type="button" aria-pressed="false" aria-label="Visuals">2</button>
+            
+              <button class="dot" type="button" aria-pressed="false" aria-label="Live Sets">3</button>
+            
           </div>
         </div>
       </main>
