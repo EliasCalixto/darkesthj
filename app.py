@@ -47,7 +47,7 @@ SLIDES: tuple[Slide, ...] = (
         status="live",
         cta="Explorar →",
         endpoint="easytech",
-        image="assets/easytech-logo.svg",
+        image="assets/easytech-logo.png",
         image_alt="Logo EasyTech",
     ),
 )
