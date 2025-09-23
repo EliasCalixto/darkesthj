@@ -555,8 +555,9 @@ body::after {
 }
 
 @media (max-width: 720px) {
-  .et-topbar { flex-direction: column; gap: 16px; text-align: center; }
-  .et-brand { justify-content: center; }
+  .et-topbar { flex-direction: column; align-items: flex-start; gap: 16px; text-align: left; }
+  .et-brand { justify-content: flex-start; }
+  .et-topbar .et-cta { align-self: flex-start; }
   .et-main { padding: 24px 20px 72px; }
   .et-card { padding: 28px 24px; }
   .et-service-grid { grid-template-columns: 1fr; }
