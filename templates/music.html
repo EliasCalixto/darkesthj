@@ -63,21 +63,38 @@
               <span aria-hidden="true">‹</span>
             </button>
             <div class="release-carousel__viewport">
-              <ul class="release-carousel__track" role="list">
+              <ul class="release-carousel__track{% if not has_multiple %} is-single{% endif %}" role="list">
                 {% for release in releases %}
-                  {% set spotify_links = release.links | selectattr('service', 'equalto', 'spotify') | list %}
-                  {% set spotify_link = spotify_links[0]['url'] if spotify_links else release.spotify_url %}
-                  {% set non_apple_links = release.links | selectattr('service', 'ne', 'apple_music') | list %}
-                  {% set fallback_link = non_apple_links[0]['url'] if non_apple_links else (release.links[0]['url'] if release.links else None) %}
-                  {% set primary_link = spotify_link or fallback_link %}
-                  {% set apple_links = release.links | selectattr('service', 'equalto', 'apple_music') | list %}
-                  {% set apple_link = apple_links[0]['url'] if apple_links else None %}
-                  {% set apple_label = apple_links[0]['label'] if apple_links else None %}
-                  {% set service_labels = release.links | map(attribute='label') | list %}
-                  <li class="release-card" data-index="{{ loop.index0 }}">
-                    <article class="release-card__inner">
-                      {% if primary_link %}
-                        <a class="release-card__media-link" href="{{ primary_link }}" target="_blank" rel="noopener noreferrer">
+                  {% if release.is_placeholder %}
+                    <li class="release-card release-card--placeholder" data-index="{{ loop.index0 }}">
+                      <article class="release-card__inner is-placeholder" aria-label="Próximos lanzamientos">
+                        <div class="release-card__media">
+                          <div class="release-card__art release-card__art--placeholder" aria-hidden="true"></div>
+                        </div>
+                        <div class="release-card__content">
+                          <p class="release-card__meta">Spotify · En preparación</p>
+                          <h3 class="release-card__title">{{ release.title }}</h3>
+                          {% if release.message %}
+                            <p class="release-card__note">{{ release.message }}</p>
+                          {% endif %}
+                        </div>
+                      </article>
+                    </li>
+                  {% else %}
+                    {% set spotify_link = release.spotify_url %}
+                    <li class="release-card" data-index="{{ loop.index0 }}">
+                      <article class="release-card__inner">
+                        {% if spotify_link %}
+                          <a class="release-card__media-link" href="{{ spotify_link }}" target="_blank" rel="noopener noreferrer">
+                            <div class="release-card__media">
+                              {% if release.cover %}
+                                <img class="release-card__art" src="{{ release.cover }}" alt="Portada de {{ release.title }}" width="400" height="400" loading="lazy" />
+                              {% else %}
+                                <div class="release-card__art placeholder" aria-hidden="true">{{ release.title[:1] }}</div>
+                              {% endif %}
+                            </div>
+                          </a>
+                        {% else %}
                           <div class="release-card__media">
                             {% if release.cover %}
                               <img class="release-card__art" src="{{ release.cover }}" alt="Portada de {{ release.title }}" width="400" height="400" loading="lazy" />
@@ -85,33 +102,21 @@
                               <div class="release-card__art placeholder" aria-hidden="true">{{ release.title[:1] }}</div>
                             {% endif %}
                           </div>
-                        </a>
-                      {% else %}
-                        <div class="release-card__media">
-                          {% if release.cover %}
-                            <img class="release-card__art" src="{{ release.cover }}" alt="Portada de {{ release.title }}" width="400" height="400" loading="lazy" />
+                        {% endif %}
+                        <div class="release-card__content">
+                          <p class="release-card__meta">{{ release.kind }} · <time datetime="{{ release.iso_date }}">{{ release.display_date }}</time></p>
+                          {% if spotify_link %}
+                            <a class="release-card__title-link" href="{{ spotify_link }}" target="_blank" rel="noopener noreferrer">
+                              <h3 class="release-card__title">{{ release.title }}</h3>
+                            </a>
+                            <a class="release-card__platforms" href="{{ spotify_link }}" target="_blank" rel="noopener noreferrer">Escúchalo en Spotify</a>
                           {% else %}
-                            <div class="release-card__art placeholder" aria-hidden="true">{{ release.title[:1] }}</div>
+                            <h3 class="release-card__title">{{ release.title }}</h3>
                           {% endif %}
                         </div>
-                      {% endif %}
-                      <div class="release-card__content">
-                        <p class="release-card__meta">{{ release.kind }} · <time datetime="{{ release.iso_date }}">{{ release.display_date }}</time></p>
-                        {% if primary_link %}
-                          <a class="release-card__title-link" href="{{ primary_link }}" target="_blank" rel="noopener noreferrer">
-                            <h3 class="release-card__title">{{ release.title }}</h3>
-                          </a>
-                        {% else %}
-                          <h3 class="release-card__title">{{ release.title }}</h3>
-                        {% endif %}
-                        {% if apple_link %}
-                          <a class="release-card__platforms" href="{{ apple_link }}" target="_blank" rel="noopener noreferrer">Disponible en {{ apple_label }}</a>
-                        {% elif service_labels %}
-                          <span class="release-card__platforms">Disponible en {{ service_labels | join(', ') }}</span>
-                        {% endif %}
-                      </div>
-                    </article>
-                  </li>
+                      </article>
+                    </li>
+                  {% endif %}
                 {% endfor %}
               </ul>
             </div>
