@@ -359,6 +359,7 @@ body::after {
   font-weight: 600;
   background: linear-gradient(90deg, #1f8bff, #21b782);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
 }
 
