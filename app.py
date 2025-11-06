@@ -255,7 +255,7 @@ def _fetch_spotify_releases(max_items: int = 200) -> list[dict[str, object]]:
             break
         offset += params["limit"]
 
-    releases.sort(key=lambda entry: entry["release_date"], reverse=True)
+    releases.sort(key=lambda entry: entry["release_date"], reverse=True) # type: ignore
     return releases
 
 
