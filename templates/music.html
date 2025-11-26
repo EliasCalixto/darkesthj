@@ -72,7 +72,7 @@
                           <div class="release-card__art release-card__art--placeholder" aria-hidden="true"></div>
                         </div>
                         <div class="release-card__content">
-                          <p class="release-card__meta">Spotify · En preparación</p>
+                          <p class="release-card__meta">Streaming · En preparación</p>
                           <h3 class="release-card__title">{{ release.title }}</h3>
                           {% if release.message %}
                             <p class="release-card__note">{{ release.message }}</p>
@@ -81,11 +81,12 @@
                       </article>
                     </li>
                   {% else %}
-                    {% set spotify_link = release.spotify_url %}
+                    {% set platform_link = release.platform_url or release.spotify_url %}
+                    {% set platform_label = release.platform_label or ('Spotify' if release.spotify_url else 'Escúchalo') %}
                     <li class="release-card" data-index="{{ loop.index0 }}">
                       <article class="release-card__inner">
-                        {% if spotify_link %}
-                          <a class="release-card__media-link" href="{{ spotify_link }}" target="_blank" rel="noopener noreferrer">
+                        {% if platform_link %}
+                          <a class="release-card__media-link" href="{{ platform_link }}" target="_blank" rel="noopener noreferrer">
                             <div class="release-card__media">
                               {% if release.cover %}
                                 <img class="release-card__art" src="{{ release.cover }}" alt="Portada de {{ release.title }}" width="400" height="400" loading="lazy" />
@@ -105,11 +106,11 @@
                         {% endif %}
                         <div class="release-card__content">
                           <p class="release-card__meta">{{ release.kind }} · <time datetime="{{ release.iso_date }}">{{ release.display_date }}</time></p>
-                          {% if spotify_link %}
-                            <a class="release-card__title-link" href="{{ spotify_link }}" target="_blank" rel="noopener noreferrer">
+                          {% if platform_link %}
+                            <a class="release-card__title-link" href="{{ platform_link }}" target="_blank" rel="noopener noreferrer">
                               <h3 class="release-card__title">{{ release.title }}</h3>
                             </a>
-                            <a class="release-card__platforms" href="{{ spotify_link }}" target="_blank" rel="noopener noreferrer">Escúchalo en Spotify</a>
+                            <a class="release-card__platforms" href="{{ platform_link }}" target="_blank" rel="noopener noreferrer">Escúchalo en {{ platform_label }}</a>
                           {% else %}
                             <h3 class="release-card__title">{{ release.title }}</h3>
                           {% endif %}

@@ -89,6 +89,7 @@ def easytech():
 
 
 SPOTIFY_ARTIST_ID = "4O1lEcAIIK039J4iOba1wr"
+APPLE_ARTIST_ID = "1835796146"
 
 _SPOTIFY_TOKEN_CACHE: dict[str, float | str | None] = {
     "token": None,
@@ -259,6 +260,53 @@ def _fetch_spotify_releases(max_items: int = 200) -> list[dict[str, object]]:
     return releases
 
 
+def _normalise_apple_image(url: str | None) -> str | None:
+    if not url:
+        return None
+    # Apple gives 100x100 by default; request a higher size for better quality.
+    return url.replace("100x100bb", "600x600bb")
+
+
+def _fetch_apple_releases(max_items: int = 200) -> list[dict[str, object]]:
+    api_url = f"https://itunes.apple.com/lookup?id={APPLE_ARTIST_ID}&entity=album&limit={max_items}"
+    try:
+        response = requests.get(api_url, timeout=10)
+        response.raise_for_status()
+    except requests.RequestException:
+        return []
+
+    payload = response.json()
+    results = payload.get("results", [])
+    releases: list[dict[str, object]] = []
+    seen_ids: set[int] = set()
+
+    for item in results:
+        collection_id = item.get("collectionId")
+        if not collection_id or collection_id in seen_ids:
+            continue
+        seen_ids.add(collection_id)
+        title = item.get("collectionName", "")
+        release_date_raw = item.get("releaseDate")
+        release_date = _normalise_release_date(release_date_raw, precision="day") if release_date_raw else datetime.now(timezone.utc)
+        artwork = _normalise_apple_image(item.get("artworkUrl100"))
+        releases.append(
+            {
+                "id": str(collection_id),
+                "title": title,
+                "release_date": release_date,
+                "cover": artwork,
+                "kind": _localise_kind(item.get("collectionType", "album")),
+                "apple_url": item.get("collectionViewUrl"),
+                "platform_label": "Apple Music",
+            }
+        )
+        if len(releases) >= max_items:
+            break
+
+    releases.sort(key=lambda entry: entry["release_date"], reverse=True) # type: ignore
+    return releases
+
+
 def get_latest_releases(max_items: int | None = None) -> list[dict[str, object]]:
     now = time.time()
     timestamp = _RELEASE_CACHE.get("timestamp", 0)
@@ -270,9 +318,29 @@ def get_latest_releases(max_items: int | None = None) -> list[dict[str, object]]
 
     fetch_limit = max_items or 200
     spotify_releases = _fetch_spotify_releases(max_items=fetch_limit)
+    apple_releases: list[dict[str, object]] = []
+    if not spotify_releases:
+        apple_releases = _fetch_apple_releases(max_items=fetch_limit)
+    else:
+        # Try to enrich with Apple releases without duplicating titles/dates
+        apple_releases = _fetch_apple_releases(max_items=fetch_limit)
+
+    combined: list[dict[str, object]] = []
+    seen_keys: set[str] = set()
+    for release in spotify_releases + apple_releases:
+        title = str(release.get("title", "")).strip().lower()
+        date_obj = release.get("release_date")
+        date_key = ""
+        if isinstance(date_obj, datetime):
+            date_key = date_obj.date().isoformat()
+        key = f"{title}-{date_key}"
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+        combined.append(release)
 
     formatted: list[dict[str, object]] = []
-    for release in spotify_releases:
+    for release in combined:
         date_obj = release.get("release_date")
         if isinstance(date_obj, datetime):
             display_date = _format_spanish_date(date_obj.astimezone(timezone.utc))
@@ -281,6 +349,9 @@ def get_latest_releases(max_items: int | None = None) -> list[dict[str, object]]
             display_date = ""
             iso_date = ""
 
+        platform_url = release.get("spotify_url") or release.get("apple_url")
+        platform_label = release.get("platform_label") or ("Spotify" if release.get("spotify_url") else "Apple Music" if release.get("apple_url") else "Escúchalo")
+
         formatted.append(
             {
                 "title": str(release.get("title", "")).strip(),
@@ -288,7 +359,8 @@ def get_latest_releases(max_items: int | None = None) -> list[dict[str, object]]
                 "kind": release.get("kind", "Lanzamiento"),
                 "display_date": display_date,
                 "iso_date": iso_date,
-                "spotify_url": release.get("spotify_url"),
+                "platform_url": platform_url,
+                "platform_label": platform_label,
             }
         )
 
@@ -297,7 +369,7 @@ def get_latest_releases(max_items: int | None = None) -> list[dict[str, object]]
             {
                 "is_placeholder": True,
                 "title": "Próximamente...",
-                "message": "Aún no hay lanzamientos disponibles en Spotify.",
+                "message": "Aún no hay lanzamientos disponibles en plataformas.",
             }
         ]
         _RELEASE_CACHE["timestamp"] = now
