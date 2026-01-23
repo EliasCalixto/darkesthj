@@ -4,11 +4,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>darkesthj — Artist</title>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="darkesthj">
+    <meta property="og:description" content="Escúchalo en YouTube, Spotify y Apple Music.">
+    <meta property="og:image" content="{{ url_for('static', filename='assets/favicon.png', _external=True) }}">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
     <meta name="description" content="Página oficial de darkesthj. Escúchalo en YouTube, Spotify y Apple Music." />
     <meta name="theme-color" content="#0f0f10" />
     <!-- Favicon & app icons -->
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='assets/favicon.png') }}" />
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/artist-spotify.jpg') }}" />
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.png') }}">
+
+    <!-- Open Graph (WhatsApp / Instagram / previews) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="darkesthj">
+    <meta property="og:description" content="Escúchalo en YouTube, Spotify y Apple Music.">
+    <meta property="og:image" content="{{ url_for('static', filename='assets/favicon.png', _external=True) }}">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
     <!-- Tipografías: Inter (variable) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
