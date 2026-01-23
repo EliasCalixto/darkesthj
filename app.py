@@ -31,6 +31,19 @@ app.config.update(
     FREEZER_DESTINATION="docs",
 )
 
+SITE_ORIGIN = os.getenv("SITE_ORIGIN", "https://darkesthj.com").rstrip("/")
+SOCIAL_IMAGE_PATH = "/static/assets/favicon.png"
+
+
+@app.context_processor
+def inject_meta_defaults():
+    return {
+        "site_origin": SITE_ORIGIN,
+        "social_image": f"{SITE_ORIGIN}{SOCIAL_IMAGE_PATH}",
+        "favicon_path": SOCIAL_IMAGE_PATH,
+        "site_name": "darkesthj",
+    }
+
 SLIDES: tuple[Slide, ...] = (
     Slide(
         title="darkesthj",

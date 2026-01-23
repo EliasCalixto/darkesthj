@@ -4,20 +4,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>darkesthj — Home</title>
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="darkesthj">
-    <meta property="og:image" content="{{ url_for('static', filename='assets/favicon.png', _external=True) }}">
-    <meta property="og:image:width" content="512">
-    <meta property="og:image:height" content="512">
+    <link rel="canonical" href="{{ site_origin }}{{ request.path }}" />
+    <meta name="description" content="Enlaces oficiales a la música y proyectos de darkesthj." />
     <meta name="theme-color" content="#0f0f10" />
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='assets/favicon.png') }}" />
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/artist-spotify.jpg') }}" />
+    <link rel="icon" type="image/png" href="{{ favicon_path }}" />
+    <link rel="apple-touch-icon" href="{{ favicon_path }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="{{ site_name }}" />
+    <meta property="og:title" content="darkesthj" />
+    <meta property="og:description" content="Enlaces oficiales a la música y proyectos de darkesthj." />
+    <meta property="og:url" content="{{ site_origin }}{{ request.path }}" />
+    <meta property="og:image" content="{{ social_image }}" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="darkesthj" />
+    <meta name="twitter:description" content="Enlaces oficiales a la música y proyectos de darkesthj." />
+    <meta name="twitter:image" content="{{ social_image }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet">
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="{{ url_for('static', filename='assets/artist-spotify.jpg') }}" />
-    <meta name="twitter:card" content="summary" />
     <link rel="preload" href="{{ url_for('static', filename='styles.css') }}" as="style" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
   </head>
