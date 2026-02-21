@@ -103,59 +103,60 @@
       const track = document.querySelector('.carousel-track');
       if (track) {
         const slides = Array.from(track.children);
-        if (!slides.length) return;
-        const prevBtn = document.querySelector('.carousel-control.prev');
-        const nextBtn = document.querySelector('.carousel-control.next');
-        const status = document.querySelector('.carousel-status');
-        const dots = Array.from(document.querySelectorAll('.carousel-dots .dot'));
-        let currentIndex = 0;
+        if (slides.length) {
+          const prevBtn = document.querySelector('.carousel-control.prev');
+          const nextBtn = document.querySelector('.carousel-control.next');
+          const status = document.querySelector('.carousel-status');
+          const dots = Array.from(document.querySelectorAll('.carousel-dots .dot'));
+          let currentIndex = 0;
 
-        const update = (index, { focus = false } = {}) => {
-          currentIndex = (index + slides.length) % slides.length;
-          const offset = currentIndex * -100;
-          track.style.setProperty('--offset', `${offset}%`);
+          const update = (index, { focus = false } = {}) => {
+            currentIndex = (index + slides.length) % slides.length;
+            const offset = currentIndex * -100;
+            track.style.setProperty('--offset', `${offset}%`);
 
-          slides.forEach((slide, i) => {
-            slide.classList.toggle('is-active', i === currentIndex);
-          });
+            slides.forEach((slide, i) => {
+              slide.classList.toggle('is-active', i === currentIndex);
+            });
+
+            dots.forEach((dot, i) => {
+              const isSelected = i === currentIndex;
+              dot.classList.toggle('is-active', isSelected);
+              dot.setAttribute('aria-pressed', String(isSelected));
+            });
+
+            const activeSlide = slides[currentIndex];
+            const title = activeSlide.querySelector('.slide-title')?.textContent?.trim() ?? '';
+            if (status) status.textContent = `${currentIndex + 1} de ${slides.length} — ${title}`;
+
+            if (focus) {
+              const focusable = activeSlide.querySelector('a, button, [tabindex="0"]');
+              focusable?.focus({ preventScroll: true });
+            }
+          };
+
+          let auto = setInterval(() => update(currentIndex + 1), 6000);
+
+          const nudge = (step) => {
+            clearInterval(auto);
+            update(step, { focus: true });
+            auto = setInterval(() => update(currentIndex + 1), 6000);
+          };
+
+          prevBtn?.addEventListener('click', () => nudge(currentIndex - 1));
+          nextBtn?.addEventListener('click', () => nudge(currentIndex + 1));
 
           dots.forEach((dot, i) => {
-            const isSelected = i === currentIndex;
-            dot.classList.toggle('is-active', isSelected);
-            dot.setAttribute('aria-pressed', String(isSelected));
+            dot.addEventListener('click', () => nudge(i));
           });
 
-          const activeSlide = slides[currentIndex];
-          const title = activeSlide.querySelector('.slide-title')?.textContent?.trim() ?? '';
-          if (status) status.textContent = `${currentIndex + 1} de ${slides.length} — ${title}`;
+          document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') nudge(currentIndex - 1);
+            if (event.key === 'ArrowRight') nudge(currentIndex + 1);
+          });
 
-          if (focus) {
-            const focusable = activeSlide.querySelector('a, button, [tabindex="0"]');
-            focusable?.focus({ preventScroll: true });
-          }
-        };
-
-        let auto = setInterval(() => update(currentIndex + 1), 6000);
-
-        const nudge = (step) => {
-          clearInterval(auto);
-          update(step, { focus: true });
-          auto = setInterval(() => update(currentIndex + 1), 6000);
-        };
-
-        prevBtn?.addEventListener('click', () => nudge(currentIndex - 1));
-        nextBtn?.addEventListener('click', () => nudge(currentIndex + 1));
-
-        dots.forEach((dot, i) => {
-          dot.addEventListener('click', () => nudge(i));
-        });
-
-        document.addEventListener('keydown', (event) => {
-          if (event.key === 'ArrowLeft') nudge(currentIndex - 1);
-          if (event.key === 'ArrowRight') nudge(currentIndex + 1);
-        });
-
-        update(0);
+          update(0);
+        }
       }
     </script>
   </body>

@@ -46,7 +46,7 @@ def inject_meta_defaults():
 
 SLIDES: tuple[Slide, ...] = (
     Slide(
-        title="darkesthj",
+        title="Music",
         description="Escucha mis lanzamientos, playlists y colaboraciones.",
         status="live",
         cta="Entrar →",
@@ -362,8 +362,9 @@ def get_latest_releases(max_items: int | None = None) -> list[dict[str, object]]
             display_date = ""
             iso_date = ""
 
-        platform_url = release.get("spotify_url") or release.get("apple_url")
-        platform_label = release.get("platform_label") or ("Spotify" if release.get("spotify_url") else "Apple Music" if release.get("apple_url") else "Escúchalo")
+        spotify_url = release.get("spotify_url")
+        platform_url = spotify_url or f"https://open.spotify.com/artist/{SPOTIFY_ARTIST_ID}"
+        platform_label = "Spotify"
 
         formatted.append(
             {
@@ -372,6 +373,7 @@ def get_latest_releases(max_items: int | None = None) -> list[dict[str, object]]
                 "kind": release.get("kind", "Lanzamiento"),
                 "display_date": display_date,
                 "iso_date": iso_date,
+                "spotify_url": spotify_url,
                 "platform_url": platform_url,
                 "platform_label": platform_label,
             }
