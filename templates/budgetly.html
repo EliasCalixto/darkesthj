@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Budgetly — Finanzas personales simples</title>
+    <link rel="canonical" href="{{ site_origin }}{{ request.path }}" />
+    <meta name="description" content="Budgetly es la app que te ayuda a entender, planificar y controlar tus finanzas personales sin complicarte la vida." />
+    <meta name="theme-color" content="#0b1f17" />
+    <link rel="icon" type="image/png" href="{{ favicon_path }}" />
+    <link rel="apple-touch-icon" href="{{ favicon_path }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="{{ site_name }}" />
+    <meta property="og:title" content="Budgetly — Finanzas personales simples" />
+    <meta property="og:description" content="Budgetly es la app que te ayuda a entender, planificar y controlar tus finanzas personales sin complicarte la vida." />
+    <meta property="og:url" content="{{ site_origin }}{{ request.path }}" />
+    <meta property="og:image" content="{{ social_image }}" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Budgetly — Finanzas personales simples" />
+    <meta name="twitter:description" content="Budgetly es la app que te ayuda a entender, planificar y controlar tus finanzas personales sin complicarte la vida." />
+    <meta name="twitter:image" content="{{ social_image }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body class="page-budgetly">
+    <header class="bg-topbar">
+      <div class="bg-brand">
+        <span class="bg-logo" aria-hidden="true">B</span>
+        <div>
+          <span class="bg-brand-name">Budgetly</span>
+          <span class="bg-brand-tag">Finanzas personales sin fricción</span>
+        </div>
+      </div>
+      <span class="bg-status-pill">Próximamente</span>
+    </header>
+
+    <main class="bg-main" role="main">
+      <section class="bg-hero">
+        <div class="bg-hero-copy">
+          <p class="bg-eyebrow">En desarrollo</p>
+          <h1>Tu dinero, claro y bajo control.</h1>
+          <p>Budgetly es una app de finanzas personales pensada para que entiendas en qué se va tu dinero, planifiques tus metas y construyas hábitos sostenibles —sin hojas de cálculo ni jerga financiera.</p>
+          <div class="bg-hero-actions">
+            <a class="bg-cta" href="mailto:eliascalixto989@gmail.com?subject=Quiero%20probar%20Budgetly">Unirme a la lista de espera</a>
+            <a class="bg-secondary" href="{{ url_for('landing') }}">← Volver al inicio</a>
+          </div>
+        </div>
+        <div class="bg-hero-card" aria-hidden="true">
+          <div class="bg-mock-header">
+            <span class="bg-mock-dot"></span>
+            <span class="bg-mock-dot"></span>
+            <span class="bg-mock-dot"></span>
+          </div>
+          <div class="bg-mock-body">
+            <p class="bg-mock-label">Balance del mes</p>
+            <p class="bg-mock-amount">S/ 2,840.50</p>
+            <div class="bg-mock-bar"><span style="width: 62%"></span></div>
+            <p class="bg-mock-note">62% del presupuesto usado · 11 días restantes</p>
+            <ul class="bg-mock-list">
+              <li><span>Alimentación</span><strong>S/ 720</strong></li>
+              <li><span>Transporte</span><strong>S/ 310</strong></li>
+              <li><span>Ahorro</span><strong>S/ 600</strong></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-features" aria-label="Funcionalidades de Budgetly">
+        <header class="bg-section-header">
+          <p class="bg-eyebrow">Lo que podrás hacer</p>
+          <h2>Diseñado para las personas, no para los contadores</h2>
+          <p>Cada función nace de problemas reales que enfrentamos al manejar nuestro dinero día a día.</p>
+        </header>
+
+        <div class="bg-feature-grid">
+          <article class="bg-card">
+            <div class="bg-card-icon" aria-hidden="true">◐</div>
+            <h3>Presupuestos visuales</h3>
+            <p>Define cuánto quieres gastar por categoría y observa tu avance con barras claras y alertas tempranas.</p>
+          </article>
+
+          <article class="bg-card">
+            <div class="bg-card-icon" aria-hidden="true">↗</div>
+            <h3>Metas de ahorro</h3>
+            <p>Crea objetivos como tu viaje, un fondo de emergencia o tu próxima inversión y mide el progreso real.</p>
+          </article>
+
+          <article class="bg-card">
+            <div class="bg-card-icon" aria-hidden="true">⚡</div>
+            <h3>Registro en segundos</h3>
+            <p>Agrega gastos e ingresos con un par de toques. Sin formularios largos ni categorías obligatorias.</p>
+          </article>
+
+          <article class="bg-card">
+            <div class="bg-card-icon" aria-hidden="true">◇</div>
+            <h3>Reportes mensuales</h3>
+            <p>Recibe un resumen automático con tus hábitos, oportunidades de ahorro y comparativos del mes anterior.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="bg-how" aria-label="Cómo funciona">
+        <header class="bg-section-header">
+          <p class="bg-eyebrow">Cómo funciona</p>
+          <h2>Tres pasos para tomar el control</h2>
+        </header>
+
+        <ol class="bg-steps">
+          <li>
+            <span class="bg-step-num">01</span>
+            <h3>Conecta tu realidad</h3>
+            <p>Registra tus ingresos fijos y los gastos típicos del mes. Budgetly aprende tu ritmo desde el primer día.</p>
+          </li>
+          <li>
+            <span class="bg-step-num">02</span>
+            <h3>Define tu plan</h3>
+            <p>Asigna presupuestos por categoría y elige una o dos metas claras. Sin objetivos imposibles.</p>
+          </li>
+          <li>
+            <span class="bg-step-num">03</span>
+            <h3>Mejora cada mes</h3>
+            <p>Revisa tu reporte, ajusta lo que no funcionó y avanza con datos reales —no con culpa.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="bg-cta-band" aria-label="Únete a Budgetly">
+        <div class="bg-cta-card">
+          <h2>Sé de los primeros en probar Budgetly</h2>
+          <p>Estamos construyéndolo con un grupo pequeño de personas que quieren mejorar su relación con el dinero. Únete y recibe acceso anticipado.</p>
+          <a class="bg-cta" href="mailto:eliascalixto989@gmail.com?subject=Quiero%20probar%20Budgetly">Quiero acceso anticipado</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-footer">
+      <small>© {{ current_year }} Budgetly · un proyecto de darkesthj</small>
+    </footer>
+  </body>
+</html>

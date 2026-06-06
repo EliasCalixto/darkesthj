@@ -63,6 +63,14 @@ SLIDES: tuple[Slide, ...] = (
         image="assets/easytech-logo.png",
         image_alt="Logo EasyTech",
     ),
+    Slide(
+        title="Budgetly",
+        description="Toma el control de tus finanzas personales con una app simple y visual.",
+        status="soon",
+        cta="Conocer más →",
+        endpoint="budgetly",
+        image_alt="Budgetly",
+    ),
 )
 
 
@@ -99,6 +107,12 @@ def music():
 def easytech():
     year = datetime.now().year
     return render_template("easytech.html", current_year=year)
+
+
+@app.route("/budgetly/")
+def budgetly():
+    year = datetime.now().year
+    return render_template("budgetly.html", current_year=year)
 
 
 SPOTIFY_ARTIST_ID = "4O1lEcAIIK039J4iOba1wr"
@@ -399,4 +413,5 @@ def get_latest_releases(max_items: int | None = None) -> list[dict[str, object]]
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # macOS usa el puerto 5000 para AirPlay Receiver, así que servimos en 5050.
+    app.run(debug=True, port=5050)
