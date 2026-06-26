@@ -64,6 +64,15 @@ SLIDES: tuple[Slide, ...] = (
         image_alt="Logo EasyTech",
     ),
     Slide(
+        title="Monitor",
+        description="Dashboards personales de finanzas y salud, sincronizados con Notion.",
+        status="live",
+        cta="Ver dashboards →",
+        endpoint="monitor",
+        image="assets/monitor-logo.svg",
+        image_alt="Logo Monitor",
+    ),
+    Slide(
         title="Budgetly",
         description="Toma el control de tus finanzas personales con una app simple y visual.",
         status="soon",
@@ -107,6 +116,11 @@ def music():
 def easytech():
     year = datetime.now().year
     return render_template("easytech.html", current_year=year)
+
+
+@app.route("/monitor/")
+def monitor():
+    return render_template("monitor.html")
 
 
 @app.route("/budgetly/")

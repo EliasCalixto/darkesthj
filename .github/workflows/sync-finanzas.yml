@@ -1,0 +1,52 @@
+name: Sync Finanzas data (Notion)
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - "scripts/sync_finanzas_notion.py"
+      - ".github/workflows/sync-finanzas.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-finanzas
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install crypto dependency
+        run: pip install --quiet pycryptodome==3.20.0
+
+      - name: Fetch Notion data
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_PAGE_ID_FINANZAS: ${{ secrets.NOTION_PAGE_ID_FINANZAS }}
+          DATA_PASSPHRASE: ${{ secrets.DATA_PASSPHRASE }}
+        run: python scripts/sync_finanzas_notion.py
+
+      - name: Commit data.json if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- monitor_src/finanzas/data.json; then
+            echo "Sin cambios en monitor_src/finanzas/data.json"
+            exit 0
+          fi
+          git add monitor_src/finanzas/data.json
+          git commit -m "chore: sync Finanzas data from Notion ($(date -u +%Y-%m-%dT%H:%MZ))"
+          git push

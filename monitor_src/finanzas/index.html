@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f5f7" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Monitor" />
+    <title>Monitor · Notion Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect x=%228%22 y=%2236%22 width=%2212%22 height=%2220%22 rx=%223%22 fill=%22%235DA3C8%22/%3E%3Crect x=%2226%22 y=%2222%22 width=%2212%22 height=%2234%22 rx=%223%22 fill=%22%2352B373%22/%3E%3Crect x=%2244%22 y=%2210%22 width=%2212%22 height=%2246%22 rx=%223%22 fill=%22%23E86868%22/%3E%3C/svg%3E" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js" defer></script>
+    <script src="./dashboard.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-left">
+        <svg class="logo" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true" focusable="false">
+          <rect x="8" y="36" width="12" height="20" rx="3" fill="#5DA3C8"/>
+          <rect x="26" y="22" width="12" height="34" rx="3" fill="#52B373"/>
+          <rect x="44" y="10" width="12" height="46" rx="3" fill="#E86868"/>
+        </svg>
+        <h1>Monitor</h1>
+        <span id="generated-at" class="muted"></span>
+      </div>
+      <div class="topbar-actions">
+        <a id="sync-trigger" class="btn-sync"
+           href="https://github.com/EliasCalixto/darkesthj/actions/workflows/sync-finanzas.yml"
+           target="_blank" rel="noreferrer"
+           title="Opens GitHub Actions in a new tab. Click 'Run workflow' there, wait ~30s, then click ↻ here to reload.">
+          <!-- desktop: sync arrows -->
+          <svg class="sync-icon-desktop" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z"/>
+          </svg>
+          <span class="sync-label">Sync from Notion</span>
+          <!-- mobile: Notion N icon -->
+          <svg class="sync-icon-mobile" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M4 3h4l8 12V3h4v18h-4L8 9v12H4z"/>
+          </svg>
+        </a>
+        <button id="refresh" class="btn-sync btn-icon" title="Reload data.json" aria-label="Reload data">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="resumen-block">
+      <div class="resumen-head">
+        <h2 id="resumen-title">Resumen</h2>
+        <span class="muted small">Overview</span>
+      </div>
+      <div id="resumen-grid" class="kpi-grid"></div>
+    </section>
+
+    <section class="filters card">
+      <div class="filter-row">
+        <div class="filter-group">
+          <label for="period">Period</label>
+          <select id="period">
+            <option value="this-week">This week</option>
+            <option value="this-month" selected>This month</option>
+            <option value="last-month">Last month</option>
+            <option value="3m">Last 3 months</option>
+            <option value="6m">Last 6 months</option>
+            <option value="year">This year</option>
+            <option value="last-year">Last year</option>
+            <option value="all">All time</option>
+          </select>
+        </div>
+        <button id="reset-filters" class="btn-ghost small" title="Reset filters">Reset</button>
+      </div>
+      <div class="filter-row chips-row">
+        <div class="filter-group filter-group-full">
+          <label>Categories <span class="muted small">— click to focus</span></label>
+          <div id="category-chips" class="chip-row"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section-card">
+      <header class="section-head">
+        <h2>Expenses<span id="exp-period" class="section-period"></span></h2>
+        <span id="exp-count" class="muted"></span>
+      </header>
+      <div class="charts-grid one">
+        <div class="chart-box chart-box--bars">
+          <h3>Category totals</h3>
+          <canvas id="exp-sum-bars"></canvas>
+        </div>
+      </div>
+      <div class="charts-grid charts-grid--center-one">
+        <div class="chart-box chart-box--donut">
+          <h3>By category</h3>
+          <canvas id="exp-donut"></canvas>
+        </div>
+      </div>
+      <div class="charts-grid one">
+        <div class="chart-box">
+          <h3>Monthly evolution</h3>
+          <canvas id="exp-evolution"></canvas>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="exp-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card section-card">
+      <header class="section-head">
+        <h2>Incomes<span id="inc-period" class="section-period"></span></h2>
+        <span id="inc-count" class="muted"></span>
+      </header>
+      <div class="charts-grid">
+        <div class="chart-box">
+          <h3>Yearly total <span class="muted small">— all time</span></h3>
+          <canvas id="inc-yearly"></canvas>
+        </div>
+        <div class="chart-box">
+          <h3>Monthly <span id="inc-monthly-label" class="muted small">— this year</span></h3>
+          <canvas id="inc-monthly"></canvas>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="inc-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="muted">
+      Data synced from Notion via GitHub Actions ·
+      <a id="repo-link" href="https://github.com/EliasCalixto/darkesthj" target="_blank" rel="noreferrer">Repo</a>
+    </footer>
+
+    <div id="status"></div>
+
+    <div id="auth-modal" class="modal" hidden>
+      <div class="modal-card">
+        <div class="modal-icon" aria-hidden="true">🔒</div>
+        <h2>Encrypted dashboard</h2>
+        <p class="muted">
+          This dashboard's data is encrypted. Enter your passphrase to unlock.
+        </p>
+        <form id="auth-form" autocomplete="off">
+          <input
+            type="password"
+            id="passphrase-input"
+            placeholder="Passphrase"
+            autocomplete="current-password"
+            spellcheck="false"
+            required
+          />
+          <label class="checkbox-row">
+            <input type="checkbox" id="remember-passphrase" checked />
+            <span>Remember on this device</span>
+          </label>
+          <button type="submit" id="auth-submit" class="btn-primary">Unlock</button>
+          <div id="auth-error" class="modal-error" role="alert"></div>
+        </form>
+      </div>
+    </div>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("./sw.js").then((reg) => {
+          // iOS/macOS PWAs rarely re-check for a new service worker on their
+          // own — force a check whenever the app regains focus.
+          document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") reg.update();
+          });
+          reg.update();
+          // Once the new worker takes control, reload so the fresh app
+          // shell (HTML/JS/CSS) is actually used.
+          let reloading = false;
+          navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (reloading) return;
+            reloading = true;
+            location.reload();
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
