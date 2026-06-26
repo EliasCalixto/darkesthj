@@ -20,9 +20,9 @@ import { SectionCard } from "./SectionCard";
 const KCAL_TARGET = 1800; // tope del rango referencial
 const KCAL_HIGH = 2500; // a partir de aquí, "muy por encima"
 
-const COLOR_IN = "#5cc27e"; // dentro del rango — verde suave
-const COLOR_OVER = "#e6b15c"; // por encima — ámbar suave
-const COLOR_HIGH = "#e0816f"; // muy por encima — coral suave
+const COLOR_IN = "#7ed0a3"; // dentro del rango — verde ligero (paleta Finance)
+const COLOR_OVER = "#f0d27a"; // por encima — amarillo sutil
+const COLOR_HIGH = "#e6c050"; // muy por encima — amarillo/dorado sutil
 
 function dayColor(kcal: number): string {
   if (kcal > KCAL_HIGH) return COLOR_HIGH;
