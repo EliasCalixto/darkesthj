@@ -74,10 +74,13 @@ jobs:
           fi
           git commit -m "chore: rebuild site ($(date -u +%Y-%m-%dT%H:%MZ))"
           # Otro workflow (sync-finance, cron) puede pushear a main mientras
-          # corremos; rebase + reintento evita el rechazo "fetch first".
+          # corremos. Intentamos push directo; si lo rechazan, rebase con
+          # --autostash (npm install ensucia package-lock.json en el árbol)
+          # y reintentamos.
           for i in 1 2 3 4 5; do
-            git pull --rebase origin main && git push && exit 0
+            if git push; then exit 0; fi
             echo "push rechazado, reintento $i..."
+            git pull --rebase --autostash origin main || true
             sleep $((2 ** i))
           done
           echo "No se pudo pushear docs/ tras varios intentos" >&2

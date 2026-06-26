@@ -54,10 +54,12 @@ jobs:
             exit 0
           fi
           git commit -m "chore: sync Finance data from Notion ($(date -u +%Y-%m-%dT%H:%MZ))"
-          # rebase + reintento por si deploy/cron pushea a main al mismo tiempo.
+          # Intentamos push directo; si lo rechazan (deploy/cron pusheó), rebase
+          # con --autostash y reintentamos.
           for i in 1 2 3 4 5; do
-            git pull --rebase origin main && git push && break
+            git push && break
             echo "push rechazado, reintento $i..."
+            git pull --rebase --autostash origin main || true
             sleep $((2 ** i))
           done
           echo "changed=true" >> "$GITHUB_OUTPUT"
