@@ -15,15 +15,19 @@ import { formatNumber } from "@/lib/format";
 import type { FoodDay, FoodEntry } from "@/lib/types";
 import { SectionCard } from "./SectionCard";
 
-// Rango referencial de kcal/día para un adulto activo (mismo criterio que el
-// análisis en Notion). Verde = dentro, ámbar = bajo, rojo = excede.
-const KCAL_LOW = 1800;
-const KCAL_HIGH = 2500;
+// Rango referencial 0–1800 kcal/día (banda verde). Por encima se usan tonos
+// suaves de la paleta Apple/Finance en vez de rojos/naranjas saturados.
+const KCAL_TARGET = 1800; // tope del rango referencial
+const KCAL_HIGH = 2500; // a partir de aquí, "muy por encima"
+
+const COLOR_IN = "#5cc27e"; // dentro del rango — verde suave
+const COLOR_OVER = "#e6b15c"; // por encima — ámbar suave
+const COLOR_HIGH = "#e0816f"; // muy por encima — coral suave
 
 function dayColor(kcal: number): string {
-  if (kcal > KCAL_HIGH) return "#ff453a";
-  if (kcal < KCAL_LOW) return "#ff9f0a";
-  return "#34c759";
+  if (kcal > KCAL_HIGH) return COLOR_HIGH;
+  if (kcal > KCAL_TARGET) return COLOR_OVER;
+  return COLOR_IN;
 }
 
 function shortDay(iso: string): string {
@@ -71,10 +75,10 @@ export function FoodSection({
         <BarChart data={chartData} margin={{ top: 8, right: 12, bottom: 0, left: -8 }}>
           <CartesianGrid strokeDasharray="3 3" className="stroke-black/10" />
           <ReferenceArea
-            y1={KCAL_LOW}
-            y2={KCAL_HIGH}
-            fill="#34c759"
-            fillOpacity={0.06}
+            y1={0}
+            y2={KCAL_TARGET}
+            fill={COLOR_IN}
+            fillOpacity={0.1}
             ifOverflow="extendDomain"
           />
           <XAxis dataKey="label" tick={{ fontSize: 11 }} />
@@ -93,7 +97,7 @@ export function FoodSection({
       </ResponsiveContainer>
 
       <p className="mt-2 text-xs text-zinc-400">
-        Banda verde = rango referencial {formatNumber(KCAL_LOW, 0)}–{formatNumber(KCAL_HIGH, 0)} kcal/día.
+        Banda verde = rango referencial 0–{formatNumber(KCAL_TARGET, 0)} kcal/día.
       </p>
 
       <div className="mt-5 overflow-x-auto">

@@ -68,6 +68,22 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+}
+
+/* Título + fecha apilados, alineados con el nombre/icono (no en una fila aparte). */
+.topbar-title {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  line-height: 1.15;
+  min-width: 0;
+}
+
+.topbar-title #generated-at {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .topbar-actions {
@@ -794,19 +810,18 @@ footer {
 
   .topbar {
     padding: 14px 16px;
-    flex-wrap: wrap;
-    gap: 6px;
+    flex-wrap: nowrap;
+    gap: 10px;
   }
   .topbar-left {
-    flex-wrap: wrap;
-    gap: 6px 12px;
+    flex-wrap: nowrap;
+    gap: 10px;
   }
   .topbar h1 {
     font-size: 18px;
   }
   #generated-at {
     font-size: 11px;
-    flex-basis: 100%;
   }
   .sync-label        { display: none; }
   .sync-icon-desktop { display: none; }
