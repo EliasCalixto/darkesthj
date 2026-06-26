@@ -61,10 +61,19 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- docs; then
+          git add docs
+          # --cached detecta archivos nuevos (untracked) ademas de modificados.
+          if git diff --cached --quiet -- docs; then
             echo "Sin cambios en docs/"
             exit 0
           fi
-          git add docs
           git commit -m "chore: rebuild site ($(date -u +%Y-%m-%dT%H:%MZ))"
-          git push
+          # Otro workflow (sync-finanzas, cron) puede pushear a main mientras
+          # corremos; rebase + reintento evita el rechazo "fetch first".
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push rechazado, reintento $i..."
+            sleep $((2 ** i))
+          done
+          echo "No se pudo pushear docs/ tras varios intentos" >&2
+          exit 1

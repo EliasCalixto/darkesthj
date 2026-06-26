@@ -54,7 +54,12 @@ jobs:
             exit 0
           fi
           git commit -m "chore: sync Finanzas data from Notion ($(date -u +%Y-%m-%dT%H:%MZ))"
-          git push
+          # rebase + reintento por si deploy/cron pushea a main al mismo tiempo.
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push && break
+            echo "push rechazado, reintento $i..."
+            sleep $((2 ** i))
+          done
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Trigger site rebuild
