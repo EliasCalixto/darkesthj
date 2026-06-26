@@ -33,10 +33,7 @@ jobs:
 
       - name: Install Health deps
         working-directory: monitor_src/health_app
-        # npm install (en vez de npm ci) para que resuelva dependencias nuevas
-        # agregadas a package.json sin requerir un package-lock.json regenerado
-        # localmente (este repo se edita sin Node disponible).
-        run: npm install --no-audit --no-fund
+        run: npm ci
 
       - name: Build Health (static export)
         working-directory: monitor_src/health_app

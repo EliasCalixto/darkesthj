@@ -2,7 +2,7 @@ import { NOTION_TOKEN } from "@/lib/config";
 import { formatBuildTimestamp } from "@/lib/format";
 import {
   getFood,
-  getHealthPageMarkdown,
+  getHealthPageHtml,
   getMonthlySummary,
   getTherapySessions,
   getWorkouts,
@@ -23,14 +23,17 @@ export default async function Home() {
     return <SetupNotice />;
   }
 
-  let months, workouts, therapy, food, pageMarkdown;
+  let months, workouts, therapy, food, pageHtml;
   try {
-    [months, workouts, therapy, food, pageMarkdown] = await Promise.all([
+    [months, workouts, therapy, food, pageHtml] = await Promise.all([
       getMonthlySummary(),
       getWorkouts(),
       getTherapySessions(),
       getFood(),
-      getHealthPageMarkdown().catch(() => null),
+      getHealthPageHtml().catch((e) => {
+        console.error("getHealthPageHtml failed:", e);
+        return null;
+      }),
     ]);
   } catch (error) {
     return <ErrorNotice error={error} />;
@@ -85,12 +88,12 @@ export default async function Home() {
         <TherapyList sessions={therapy} />
       </SectionCard>
 
-      {pageMarkdown && (
+      {pageHtml && (
         <SectionCard
           title="📋 Análisis detallado"
           description="Resumen completo sincronizado desde tu página de Notion"
         >
-          <NotionContent markdown={pageMarkdown} />
+          <NotionContent html={pageHtml} />
         </SectionCard>
       )}
     </div>

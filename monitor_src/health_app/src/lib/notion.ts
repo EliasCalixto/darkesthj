@@ -1,5 +1,9 @@
 import { Client } from "@notionhq/client";
-import type { PageObjectResponse } from "@notionhq/client";
+import type {
+  BlockObjectResponse,
+  PageObjectResponse,
+  RichTextItemResponse,
+} from "@notionhq/client";
 import {
   FOOD_DATA_SOURCE_ID,
   HEALTH_PAGE_ID,
@@ -155,23 +159,141 @@ export async function getTherapySessions(): Promise<TherapySession[]> {
     .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 }
 
-export async function getHealthPageMarkdown(): Promise<string | null> {
-  const notion = getClient();
-  const { markdown } = await notion.pages.retrieveMarkdown({
-    page_id: HEALTH_PAGE_ID,
-  });
+// --- Render the full Notion "Health" page to HTML --------------------------
+// Recorremos los bloques de la página con la API estable `blocks.children.list`
+// (la antigua `pages.retrieveMarkdown` devolvía null en este SDK) y los
+// convertimos a HTML con las clases que estiliza globals.css (.notion-content).
+// Así TODO lo que el usuario escribe en su página de Notion —encabezados,
+// párrafos, listas y tablas— aparece en el dashboard y se actualiza solo.
 
-  // Notion serializa los enlaces a bases de datos incrustadas como pseudo-tags
-  // "<database ...>...</database>" dentro del markdown; no son contenido legible
-  // (sus datos se muestran como gráficos/tablas propias), así que se descartan.
-  // El resto de la página —encabezados, tablas, párrafos— se conserva tal cual
-  // para renderizar TODO el análisis que el usuario escribe en Notion.
-  const cleaned = markdown
-    .replace(/<database\b[^>]*>[\s\S]*?<\/database>/gi, "")
-    // Los separadores "---" que quedaban junto a las databases removidas pueden
-    // amontonarse al inicio; se colapsan los saltos y reglas redundantes.
-    .replace(/^(?:\s*---\s*\n)+/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-  return cleaned.length > 0 ? cleaned : null;
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function renderRichText(richText: RichTextItemResponse[]): string {
+  return richText
+    .map((token) => {
+      let html = escapeHtml(token.plain_text);
+      const a = token.annotations;
+      if (a.code) html = `<code>${html}</code>`;
+      if (a.bold) html = `<strong>${html}</strong>`;
+      if (a.italic) html = `<em>${html}</em>`;
+      if (token.href) {
+        html = `<a href="${escapeHtml(token.href)}" target="_blank" rel="noreferrer">${html}</a>`;
+      }
+      return html;
+    })
+    .join("");
+}
+
+async function listAllBlocks(blockId: string): Promise<BlockObjectResponse[]> {
+  const notion = getClient();
+  const blocks: BlockObjectResponse[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const response = await notion.blocks.children.list({
+      block_id: blockId,
+      start_cursor: cursor,
+      page_size: 100,
+    });
+    blocks.push(...(response.results as BlockObjectResponse[]));
+    cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
+  } while (cursor);
+
+  return blocks;
+}
+
+async function renderTable(block: BlockObjectResponse & { type: "table" }): Promise<string> {
+  const rows = await listAllBlocks(block.id);
+  const hasHeader = block.table.has_column_header;
+
+  const rowsHtml = rows
+    .map((row, index) => {
+      if (row.type !== "table_row") return "";
+      const cells = row.table_row.cells
+        .map((cell) => {
+          const tag = hasHeader && index === 0 ? "th" : "td";
+          return `<${tag}>${renderRichText(cell)}</${tag}>`;
+        })
+        .join("");
+      return `<tr>${cells}</tr>`;
+    })
+    .join("");
+
+  return `<table>${rowsHtml}</table>`;
+}
+
+export async function getHealthPageHtml(): Promise<string | null> {
+  const blocks = await listAllBlocks(HEALTH_PAGE_ID);
+  const parts: string[] = [];
+  let listOpen = false;
+
+  const closeList = () => {
+    if (listOpen) {
+      parts.push("</ul>");
+      listOpen = false;
+    }
+  };
+
+  for (const block of blocks) {
+    if (block.type === "bulleted_list_item") {
+      if (!listOpen) {
+        parts.push("<ul>");
+        listOpen = true;
+      }
+      parts.push(`<li>${renderRichText(block.bulleted_list_item.rich_text)}</li>`);
+      continue;
+    }
+
+    closeList();
+
+    switch (block.type) {
+      case "heading_1":
+        parts.push(`<h2>${renderRichText(block.heading_1.rich_text)}</h2>`);
+        break;
+      case "heading_2":
+        parts.push(`<h2>${renderRichText(block.heading_2.rich_text)}</h2>`);
+        break;
+      case "heading_3":
+        parts.push(`<h3>${renderRichText(block.heading_3.rich_text)}</h3>`);
+        break;
+      case "paragraph": {
+        const html = renderRichText(block.paragraph.rich_text);
+        if (html.trim()) parts.push(`<p>${html}</p>`);
+        break;
+      }
+      case "quote":
+        parts.push(`<blockquote>${renderRichText(block.quote.rich_text)}</blockquote>`);
+        break;
+      case "callout":
+        parts.push(`<p>${renderRichText(block.callout.rich_text)}</p>`);
+        break;
+      case "code":
+        parts.push(
+          `<pre><code>${escapeHtml(block.code.rich_text.map((t) => t.plain_text).join(""))}</code></pre>`,
+        );
+        break;
+      case "divider":
+        // Evita reglas duplicadas o al inicio (quedan junto a las databases).
+        if (parts.length > 0 && parts[parts.length - 1] !== "<hr />") {
+          parts.push("<hr />");
+        }
+        break;
+      case "table":
+        parts.push(await renderTable(block));
+        break;
+      default:
+        // child_database, child_page, etc. -> se omiten (no son texto legible).
+        break;
+    }
+  }
+
+  closeList();
+
+  const html = parts.join("\n").trim();
+  return html.length > 0 ? html : null;
 }
