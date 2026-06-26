@@ -4,27 +4,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Budgetly — Próximamente</title>
-    <link rel="canonical" href="https://darkesthj.com/budgetly/" />
+    <link rel="canonical" href="{{ site_origin }}{{ request.path }}" />
     <meta name="description" content="Budgetly: toma el control de tus finanzas personales con una app simple y visual. Próximamente." />
     <meta name="theme-color" content="#0c1324" />
-    <link rel="icon" type="image/png" href="/static/assets/favicon.png" />
-    <link rel="apple-touch-icon" href="/static/assets/favicon.png" />
+    <link rel="icon" type="image/png" href="{{ favicon_path }}" />
+    <link rel="apple-touch-icon" href="{{ favicon_path }}" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="darkesthj" />
+    <meta property="og:site_name" content="{{ site_name }}" />
     <meta property="og:title" content="Budgetly — Próximamente" />
     <meta property="og:description" content="Budgetly: toma el control de tus finanzas personales con una app simple y visual. Próximamente." />
-    <meta property="og:url" content="https://darkesthj.com/budgetly/" />
-    <meta property="og:image" content="https://darkesthj.com/static/assets/favicon.png" />
+    <meta property="og:url" content="{{ site_origin }}{{ request.path }}" />
+    <meta property="og:image" content="{{ social_image }}" />
     <meta property="og:image:width" content="512" />
     <meta property="og:image:height" content="512" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Budgetly — Próximamente" />
     <meta name="twitter:description" content="Budgetly: toma el control de tus finanzas personales con una app simple y visual. Próximamente." />
-    <meta name="twitter:image" content="https://darkesthj.com/static/assets/favicon.png" />
+    <meta name="twitter:image" content="{{ social_image }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
   </head>
   <body class="page-budgetly">
     <header class="bg-topbar">
@@ -49,7 +49,7 @@
     </main>
 
     <footer class="bg-footer">
-      <small>© 2026 Budgetly. Próximamente disponible.</small>
+      <small>© {{ current_year }} Budgetly. Próximamente disponible.</small>
     </footer>
   </body>
 </html>
