@@ -15,7 +15,7 @@ from flask import Flask, render_template, url_for
 class Slide:
     title: str
     description: str
-    status: str  # "live" or "soon"
+    status: str  # "live", "soon" or "inactive"
     cta: str
     endpoint: Optional[str] = None
     image: Optional[str] = None
@@ -55,15 +55,6 @@ SLIDES: tuple[Slide, ...] = (
         image_alt="Foto de perfil de darkesthj",
     ),
     Slide(
-        title="EasyTech",
-        description="Landing pages, portafolios y automatizaciones que convierten.",
-        status="live",
-        cta="Explorar →",
-        endpoint="easytech",
-        image="assets/easytech-logo.png",
-        image_alt="Logo EasyTech",
-    ),
-    Slide(
         title="Monitor",
         description="Dashboards personales de finanzas y salud, sincronizados con Notion.",
         status="live",
@@ -73,11 +64,18 @@ SLIDES: tuple[Slide, ...] = (
         image_alt="Logo Monitor",
     ),
     Slide(
+        title="EasyTech",
+        description="Landing pages, portafolios y automatizaciones que convierten.",
+        status="inactive",
+        cta="Temporalmente inactivo",
+        image="assets/easytech-logo.png",
+        image_alt="Logo EasyTech",
+    ),
+    Slide(
         title="Budgetly",
         description="Toma el control de tus finanzas personales con una app simple y visual.",
-        status="soon",
-        cta="Conocer más →",
-        endpoint="budgetly",
+        status="inactive",
+        cta="Temporalmente inactivo",
         image_alt="Budgetly",
     ),
 )

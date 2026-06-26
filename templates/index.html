@@ -46,13 +46,20 @@
                 <li class="carousel-slide{% if loop.first %} is-active{% endif %}" data-state="{{ slide.status }}">
                   {% set has_art = slide.image is not none %}
                   {% set card_classes = 'slide-card' + (' has-art' if has_art else '') %}
+                  {% set is_inactive = slide.status == 'inactive' %}
+                  {% set disabled_classes = 'is-disabled' + (' is-locked' if is_inactive else '') %}
                   {% if slide.href %}
                     <a class="{{ card_classes }}" href="{{ slide.href }}">
                   {% else %}
-                    <div class="{{ card_classes }} is-disabled" aria-disabled="true">
+                    <div class="{{ card_classes }} {{ disabled_classes }}" aria-disabled="true">
                   {% endif %}
                       <div class="slide-card__body">
-                        <p class="slide-eyebrow {{ slide.status }}">{{ 'Disponible' if slide.status == 'live' else 'Próximamente' }}</p>
+                        <p class="slide-eyebrow {{ slide.status }}">
+                          {% if slide.status == 'live' %}Disponible
+                          {% elif slide.status == 'inactive' %}🔒 Inactivo temporalmente
+                          {% else %}Próximamente
+                          {% endif %}
+                        </p>
                         <h2 class="slide-title">{{ slide.title }}</h2>
                         <p class="slide-description">{{ slide.description }}</p>
                         <span class="slide-link">{{ slide.cta }}</span>

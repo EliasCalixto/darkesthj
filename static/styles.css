@@ -968,6 +968,19 @@ body::after {
   opacity: .75;
 }
 
+.slide-card.is-locked {
+  opacity: .55;
+  filter: grayscale(.4);
+  border-color: color-mix(in srgb, var(--border) 60%, transparent);
+  background:
+    repeating-linear-gradient(135deg, rgba(255,255,255,.03) 0 10px, transparent 10px 20px),
+    color-mix(in srgb, var(--card) 94%, transparent);
+}
+
+.slide-card.is-locked .slide-card__media img {
+  filter: grayscale(1);
+}
+
 .slide-eyebrow {
   margin: 0;
   font-size: 13px;
@@ -978,6 +991,7 @@ body::after {
 
 .slide-eyebrow.live { color: color-mix(in srgb, var(--fg) 80%, #7bffd2 40%); }
 .slide-eyebrow.soon { color: color-mix(in srgb, var(--muted) 100%, #ffffff 20%); }
+.slide-eyebrow.inactive { color: color-mix(in srgb, var(--muted) 100%, #ff8a8a 15%); }
 
 .slide-title {
   margin: 0;
