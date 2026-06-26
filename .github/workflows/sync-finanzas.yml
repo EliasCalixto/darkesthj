@@ -45,12 +45,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- monitor_src/finanzas/data.json; then
+          git add monitor_src/finanzas/data.json
+          # --cached detecta tanto archivos nuevos (untracked) como modificados,
+          # a diferencia de `git diff` a secas que ignora archivos nuevos.
+          if git diff --cached --quiet -- monitor_src/finanzas/data.json; then
             echo "Sin cambios en monitor_src/finanzas/data.json"
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git add monitor_src/finanzas/data.json
           git commit -m "chore: sync Finanzas data from Notion ($(date -u +%Y-%m-%dT%H:%MZ))"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
