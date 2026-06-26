@@ -34,7 +34,7 @@ if __name__ == "__main__":
         destination.write_text(cname_src.read_text(encoding="utf-8"), encoding="utf-8")
 
     destination_root = Path(app.config["FREEZER_DESTINATION"]) / "monitor"
-    _copy_static_subsite(Path("monitor_src/finanzas"), destination_root / "finanzas")
+    _copy_static_subsite(Path("monitor_src/finance"), destination_root / "finance")
 
     # docs/monitor/health/ se genera aparte (build de Next.js) y se copia
     # DESPUES de correr este script, ya que Frozen-Flask borra archivos

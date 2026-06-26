@@ -1,4 +1,4 @@
-name: Sync Finanzas data (Notion)
+name: Sync Finance data (Notion)
 
 on:
   schedule:
@@ -7,15 +7,15 @@ on:
   push:
     branches: [main]
     paths:
-      - "scripts/sync_finanzas_notion.py"
-      - ".github/workflows/sync-finanzas.yml"
+      - "scripts/sync_finance_notion.py"
+      - ".github/workflows/sync-finance.yml"
 
 permissions:
   contents: write
   actions: write
 
 concurrency:
-  group: sync-finanzas
+  group: sync-finance
   cancel-in-progress: false
 
 jobs:
@@ -38,22 +38,22 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_PAGE_ID_FINANZAS: ${{ secrets.NOTION_PAGE_ID_FINANZAS }}
           DATA_PASSPHRASE: ${{ secrets.DATA_PASSPHRASE }}
-        run: python scripts/sync_finanzas_notion.py
+        run: python scripts/sync_finance_notion.py
 
       - name: Commit data.json if changed
         id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add monitor_src/finanzas/data.json
+          git add monitor_src/finance/data.json
           # --cached detecta tanto archivos nuevos (untracked) como modificados,
           # a diferencia de `git diff` a secas que ignora archivos nuevos.
-          if git diff --cached --quiet -- monitor_src/finanzas/data.json; then
-            echo "Sin cambios en monitor_src/finanzas/data.json"
+          if git diff --cached --quiet -- monitor_src/finance/data.json; then
+            echo "Sin cambios en monitor_src/finance/data.json"
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m "chore: sync Finanzas data from Notion ($(date -u +%Y-%m-%dT%H:%MZ))"
+          git commit -m "chore: sync Finance data from Notion ($(date -u +%Y-%m-%dT%H:%MZ))"
           # rebase + reintento por si deploy/cron pushea a main al mismo tiempo.
           for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push && break

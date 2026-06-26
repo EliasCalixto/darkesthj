@@ -68,7 +68,7 @@ jobs:
             exit 0
           fi
           git commit -m "chore: rebuild site ($(date -u +%Y-%m-%dT%H:%MZ))"
-          # Otro workflow (sync-finanzas, cron) puede pushear a main mientras
+          # Otro workflow (sync-finance, cron) puede pushear a main mientras
           # corremos; rebase + reintento evita el rechazo "fetch first".
           for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push && exit 0

@@ -1,9 +1,9 @@
-"""Descarga todas las databases hijas de la pagina Monitor en Notion y escribe
-monitor_src/finanzas/data.json.
+"""Descarga todas las databases hijas de la pagina Finance en Notion y escribe
+monitor_src/finance/data.json.
 
 Variables de entorno requeridas:
   NOTION_TOKEN               - integration token (secret_xxx)
-  NOTION_PAGE_ID_FINANZAS    - id de la pagina raiz "Monitor"/Finanzas
+  NOTION_PAGE_ID_FINANZAS    - id de la pagina raiz "Finance" (ex "Monitor")
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ from urllib import error, request
 
 NOTION_VERSION = "2022-06-28"
 API_BASE = "https://api.notion.com/v1"
-OUTPUT_PATH = Path(__file__).resolve().parent.parent / "monitor_src" / "finanzas" / "data.json"
+OUTPUT_PATH = Path(__file__).resolve().parent.parent / "monitor_src" / "finance" / "data.json"
 
 
 def _headers(token: str) -> dict[str, str]:
