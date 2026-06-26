@@ -20,6 +20,14 @@ def _copy_static_subsite(src: Path, dest: Path) -> None:
 if __name__ == "__main__":
     freezer.freeze()
 
+    # GitHub Pages corre Jekyll por defecto, que ignora carpetas que empiezan
+    # con "_" (como el `_next/` de la app Next.js de Health) -> sus CSS/JS
+    # darian 404 y Health se veria sin estilos. Un `.nojekyll` desactiva Jekyll.
+    # Frozen-Flask borra archivos "extra" en cada freeze(), por eso lo
+    # recreamos aqui despues de freezear.
+    nojekyll = Path(app.config["FREEZER_DESTINATION"]) / ".nojekyll"
+    nojekyll.write_text("", encoding="utf-8")
+
     cname_src = Path("CNAME")
     if cname_src.exists():
         destination = Path(app.config["FREEZER_DESTINATION"]) / "CNAME"

@@ -40,12 +40,13 @@ export default async function Home() {
       <header>
         <a
           href="/monitor/"
-          className="mb-3 inline-flex items-center gap-1.5 rounded-md border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white"
+          aria-label="Volver a Monitor"
+          title="Volver a Monitor"
+          className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path d="M9.78 3.22a.75.75 0 0 1 0 1.06L6.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" />
           </svg>
-          Monitor
         </a>
         <h1 className="flex items-center gap-2 text-2xl font-bold sm:text-3xl">
           <HeartRateIcon className="h-7 w-7 sm:h-8 sm:w-8" />
