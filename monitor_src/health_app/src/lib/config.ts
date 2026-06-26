@@ -1,9 +1,20 @@
 // Notion integration configuration.
 // NOTION_TOKEN: internal integration secret with access to the "Health" page (and its databases).
 // NOTION_PAGE_ID: the ID of the "Health" page in Notion.
-export const NOTION_TOKEN = process.env.NOTION_TOKEN ?? "";
-export const HEALTH_PAGE_ID =
-  process.env.NOTION_PAGE_ID ?? "104e6c72cc7280b582bbeb8757c49704";
+export const NOTION_TOKEN = (process.env.NOTION_TOKEN ?? "").trim();
+
+// El secreto de GitHub puede traer espacios sobrantes o incluso la URL completa
+// pegada por error; normalizamos a un ID hex de 32 caracteres para que la API
+// de Notion (que valida UUID) no falle.
+function normalizePageId(raw: string): string {
+  const trimmed = raw.trim();
+  const matches = trimmed.match(/[0-9a-fA-F]{32}/g);
+  return matches ? matches[matches.length - 1] : trimmed;
+}
+
+export const HEALTH_PAGE_ID = normalizePageId(
+  process.env.NOTION_PAGE_ID ?? "104e6c72cc7280b582bbeb8757c49704",
+);
 
 // Data source IDs for the databases linked from the Health page.
 // These are stable for this workspace; override via env vars if needed.
