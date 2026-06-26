@@ -1,4 +1,10 @@
-import type { MonthlySummary, Workout, WorkoutTypeSummary } from "./types";
+import type {
+  FoodDay,
+  FoodEntry,
+  MonthlySummary,
+  Workout,
+  WorkoutTypeSummary,
+} from "./types";
 
 export type MetricKey = keyof Pick<
   MonthlySummary,
@@ -97,4 +103,27 @@ export function summarizeWorkoutsByType(workouts: Workout[]): WorkoutTypeSummary
 
 function sum(values: (number | null)[]): number {
   return values.reduce((total: number, v) => total + (v ?? 0), 0);
+}
+
+// Agrupa el registro de comidas (🍎 Alimentación) por día calendario, sumando
+// las calorías de cada comida. La fecha se recorta a YYYY-MM-DD para evitar el
+// corrimiento de zona horaria al agrupar.
+export function summarizeFoodByDay(entries: FoodEntry[]): FoodDay[] {
+  const groups = new Map<string, FoodEntry[]>();
+
+  for (const entry of entries) {
+    if (!entry.date) continue;
+    const day = entry.date.slice(0, 10);
+    const list = groups.get(day) ?? [];
+    list.push(entry);
+    groups.set(day, list);
+  }
+
+  return Array.from(groups.entries())
+    .map(([date, list]) => ({
+      date,
+      totalCalories: sum(list.map((e) => e.calories)),
+      count: list.length,
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
 }

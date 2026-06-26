@@ -3,9 +3,17 @@
 /* Force light mode: override dark variant to require a .dark class that we never add */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Light "Apple" theme, matching the Finance dashboard (monitor_src/finance). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f5f7;
+  --foreground: #1d1d1f;
+  --card: #ffffff;
+  --muted: #86868b;
+  --border: #e5e5ea;
+  --green: #34c759;
+  --amber: #ff9f0a;
+  --red: #ff453a;
+  --radius: 14px;
 }
 
 @theme inline {
@@ -15,8 +23,120 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  color-scheme: light;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI",
+    Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ----------------------------------------------------------------------------
+   Notion page content — the full "Health" page from Notion is fetched as
+   markdown (with raw <table> HTML) and rendered here. These rules give it the
+   same calm, light, Apple-style look as the Finance dashboard tables.
+---------------------------------------------------------------------------- */
+.notion-content {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #2b2b2f;
+  overflow-x: auto;
+}
+
+.notion-content h2 {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+}
+
+.notion-content h3 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.notion-content p {
+  margin: 0.6rem 0;
+}
+
+.notion-content strong {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.notion-content em {
+  color: var(--muted);
+}
+
+.notion-content a {
+  color: #0071e3;
+  text-decoration: none;
+}
+
+.notion-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  background: #f0f0f3;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.1em 0.4em;
+}
+
+.notion-content ul {
+  margin: 0.6rem 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.notion-content li {
+  margin: 0.25rem 0;
+}
+
+.notion-content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.75rem 0;
+}
+
+/* Tables — rounded card container, soft header, zebra rows. */
+.notion-content table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0.75rem 0 1.25rem;
+  font-size: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.notion-content thead th,
+.notion-content tr:first-child td {
+  background: #fafafc;
+  font-weight: 600;
+  color: var(--foreground);
+  text-align: left;
+}
+
+.notion-content th,
+.notion-content td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.notion-content tr:last-child td {
+  border-bottom: none;
+}
+
+.notion-content tbody tr:nth-child(even) td {
+  background: #fcfcfd;
 }

@@ -18,3 +18,8 @@ export const WORKOUTS_DATA_SOURCE_ID =
 export const THERAPY_DATA_SOURCE_ID =
   process.env.NOTION_THERAPY_DATA_SOURCE_ID ??
   "29fe6c72-cc72-815f-b7d4-000ba5715621";
+
+// 🍎 Alimentación: manual food log (Nombre / Calorías / Date).
+export const FOOD_DATA_SOURCE_ID =
+  process.env.NOTION_FOOD_DATA_SOURCE_ID ??
+  "5ea92aec-1c64-4a47-977a-bd6041bcbe3e";

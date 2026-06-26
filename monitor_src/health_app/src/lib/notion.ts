@@ -1,6 +1,7 @@
 import { Client } from "@notionhq/client";
 import type { PageObjectResponse } from "@notionhq/client";
 import {
+  FOOD_DATA_SOURCE_ID,
   HEALTH_PAGE_ID,
   MONTHLY_DATA_SOURCE_ID,
   NOTION_TOKEN,
@@ -8,6 +9,7 @@ import {
   WORKOUTS_DATA_SOURCE_ID,
 } from "./config";
 import type {
+  FoodEntry,
   MonthlySummary,
   TherapySession,
   Workout,
@@ -122,6 +124,22 @@ export async function getWorkouts(): Promise<Workout[]> {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
+export async function getFood(): Promise<FoodEntry[]> {
+  const pages = await queryAllPages(FOOD_DATA_SOURCE_ID);
+
+  return pages
+    .map((page) => {
+      const props = page.properties;
+      return {
+        name: getTitle(props, "Nombre"),
+        date: getDate(props, "Date") ?? "",
+        calories: getNumber(props, "Calorías"),
+      };
+    })
+    .filter((entry) => entry.date !== "")
+    .sort((a, b) => b.date.localeCompare(a.date));
+}
+
 export async function getTherapySessions(): Promise<TherapySession[]> {
   const pages = await queryAllPages(THERAPY_DATA_SOURCE_ID);
 
@@ -137,22 +155,22 @@ export async function getTherapySessions(): Promise<TherapySession[]> {
     .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 }
 
-export async function getHealthPageIntro(): Promise<string | null> {
+export async function getHealthPageMarkdown(): Promise<string | null> {
   const notion = getClient();
   const { markdown } = await notion.pages.retrieveMarkdown({
     page_id: HEALTH_PAGE_ID,
   });
 
-  const firstHeadingIndex = markdown.indexOf("\n#");
-  const intro =
-    firstHeadingIndex === -1 ? markdown : markdown.slice(0, firstHeadingIndex);
-
   // Notion serializa los enlaces a bases de datos incrustadas como pseudo-tags
-  // "<database ...>...</database>" dentro del markdown; no son contenido legible,
-  // así que se descartan en vez de mostrarlos como texto crudo.
-  const cleaned = intro
+  // "<database ...>...</database>" dentro del markdown; no son contenido legible
+  // (sus datos se muestran como gráficos/tablas propias), así que se descartan.
+  // El resto de la página —encabezados, tablas, párrafos— se conserva tal cual
+  // para renderizar TODO el análisis que el usuario escribe en Notion.
+  const cleaned = markdown
     .replace(/<database\b[^>]*>[\s\S]*?<\/database>/gi, "")
-    .replace(/[ \t]{2,}/g, " ")
+    // Los separadores "---" que quedaban junto a las databases removidas pueden
+    // amontonarse al inicio; se colapsan los saltos y reglas redundantes.
+    .replace(/^(?:\s*---\s*\n)+/g, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
   return cleaned.length > 0 ? cleaned : null;

@@ -4,8 +4,10 @@ on:
   push:
     branches: [main]
   schedule:
-    # Reconstruye Health cada 6h para refrescar sus datos de Notion
-    - cron: "0 */6 * * *"
+    # Reconstruye Health cada 15 min para refrescar sus datos de Notion,
+    # a la par que el sync de Finance. El commit de docs/ no-opea si nada
+    # cambió, así que solo publica cuando hay datos nuevos.
+    - cron: "*/15 * * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -31,7 +33,10 @@ jobs:
 
       - name: Install Health deps
         working-directory: monitor_src/health_app
-        run: npm ci
+        # npm install (en vez de npm ci) para que resuelva dependencias nuevas
+        # agregadas a package.json sin requerir un package-lock.json regenerado
+        # localmente (este repo se edita sin Node disponible).
+        run: npm install --no-audit --no-fund
 
       - name: Build Health (static export)
         working-directory: monitor_src/health_app

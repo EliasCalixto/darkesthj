@@ -44,3 +44,15 @@ export type TherapySession = {
   date: string | null;
   url: string;
 };
+
+export type FoodEntry = {
+  name: string;
+  date: string;
+  calories: number | null;
+};
+
+export type FoodDay = {
+  date: string;
+  totalCalories: number;
+  count: number;
+};
