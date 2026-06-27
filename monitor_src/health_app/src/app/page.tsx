@@ -40,7 +40,13 @@ export default async function Home() {
           <HeartRateIcon className="h-6 w-6 shrink-0" />
           <div className="flex min-w-0 flex-col leading-tight">
             <h1 className="text-[18px] font-semibold tracking-tight sm:text-[22px]">Health</h1>
-            <span className="truncate text-[11px] text-zinc-400">
+            <span
+              className="truncate text-[11px] text-zinc-400 sm:text-[12px]"
+              style={{
+                fontFamily:
+                  '-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, sans-serif',
+              }}
+            >
               Actualizado: {generatedAt}
             </span>
           </div>
