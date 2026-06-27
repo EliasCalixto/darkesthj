@@ -24,14 +24,41 @@
             <path d="M9.78 3.22a.75.75 0 0 1 0 1.06L6.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"/>
           </svg>
         </a>
-        <svg class="logo" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true" focusable="false">
-          <rect x="8" y="36" width="12" height="20" rx="3" fill="#5DA3C8"/>
-          <rect x="26" y="22" width="12" height="34" rx="3" fill="#52B373"/>
-          <rect x="44" y="10" width="12" height="46" rx="3" fill="#E86868"/>
-        </svg>
-        <div class="topbar-title">
-          <h1>Finance</h1>
-          <span id="generated-at" class="muted"></span>
+        <div class="page-switcher">
+          <div id="page-switcher-btn" class="switcher-btn" role="button" tabindex="0"
+               aria-haspopup="true" aria-expanded="false" title="Cambiar de panel">
+            <svg class="logo" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true" focusable="false">
+              <rect x="8" y="36" width="12" height="20" rx="3" fill="#5DA3C8"/>
+              <rect x="26" y="22" width="12" height="34" rx="3" fill="#52B373"/>
+              <rect x="44" y="10" width="12" height="46" rx="3" fill="#E86868"/>
+            </svg>
+            <div class="topbar-title">
+              <div class="switcher-name">
+                <h1>Finance</h1>
+                <svg class="switcher-caret" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"/>
+                </svg>
+              </div>
+              <span id="generated-at" class="muted"></span>
+            </div>
+          </div>
+          <div id="page-switcher-menu" class="switcher-menu" role="menu" hidden>
+            <a class="switcher-item is-current" role="menuitem" href="/monitor/finance/">
+              <svg viewBox="0 0 64 64" width="18" height="18" aria-hidden="true">
+                <rect x="8" y="36" width="12" height="20" rx="3" fill="#5DA3C8"/>
+                <rect x="26" y="22" width="12" height="34" rx="3" fill="#52B373"/>
+                <rect x="44" y="10" width="12" height="46" rx="3" fill="#E86868"/>
+              </svg>
+              <span>Finance</span>
+            </a>
+            <a class="switcher-item" role="menuitem" href="/monitor/health/">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#34c759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/>
+                <path d="M3.5 12.5h4l2-3 2.5 5 2-4 1.5 2h4" stroke-width="1.6"/>
+              </svg>
+              <span>Health</span>
+            </a>
+          </div>
         </div>
       </div>
       <div class="topbar-actions">

@@ -1067,6 +1067,41 @@ function attachFilterListeners() {
     applyAndRender();
   });
   $("#refresh").addEventListener("click", loadData);
+  attachPageSwitcher();
+}
+
+// Despliega un menú (Finance ⇄ Health) al pulsar el título, para saltar rápido
+// de un panel al otro.
+function attachPageSwitcher() {
+  const btn = $("#page-switcher-btn");
+  const menu = $("#page-switcher-menu");
+  if (!btn || !menu) return;
+
+  const open = () => {
+    menu.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+  };
+  const close = () => {
+    menu.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+  };
+  const toggle = () => (menu.hidden ? open() : close());
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggle();
+  });
+  btn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggle();
+    } else if (e.key === "Escape") {
+      close();
+    }
+  });
+  document.addEventListener("click", (e) => {
+    if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) close();
+  });
 }
 
 // ---------- Bootstrap ----------

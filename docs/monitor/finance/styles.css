@@ -86,6 +86,97 @@ body {
   text-overflow: ellipsis;
 }
 
+/* ---------- Selector de panel (Finance ⇄ Health) ---------- */
+
+.page-switcher {
+  position: relative;
+  min-width: 0;
+}
+
+.switcher-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 3px 7px;
+  margin: -3px -7px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.switcher-btn:hover {
+  background: var(--hover-bg);
+}
+
+.switcher-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.switcher-caret {
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: transform 0.15s ease;
+}
+
+.switcher-btn[aria-expanded="true"] .switcher-caret {
+  transform: rotate(180deg);
+}
+
+.switcher-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 210px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  z-index: 50;
+}
+
+.switcher-menu[hidden] {
+  display: none;
+}
+
+.switcher-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none !important;
+}
+
+.switcher-item:hover {
+  background: var(--hover-bg);
+  color: var(--text);
+}
+
+.switcher-item.is-current {
+  background: var(--hover-bg);
+}
+
+.switcher-item svg {
+  flex-shrink: 0;
+}
+
+.switcher-item.is-current::after {
+  content: "✓";
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .topbar-actions {
   display: flex;
   align-items: center;
