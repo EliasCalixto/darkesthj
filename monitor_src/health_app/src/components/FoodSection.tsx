@@ -5,6 +5,7 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  LabelList,
   ReferenceArea,
   ResponsiveContainer,
   Tooltip,
@@ -24,10 +25,22 @@ const COLOR_IN = "#7ed0a3"; // dentro del rango — verde ligero (paleta Finance
 const COLOR_OVER = "#f0d27a"; // por encima — amarillo sutil
 const COLOR_HIGH = "#e6c050"; // muy por encima — amarillo/dorado sutil
 
-function dayColor(kcal: number): string {
+// Día actual (en tiempo real): verde algo más intenso si aún voy dentro de la
+// meta, rojo de la paleta de Finance si ya me pasé.
+const COLOR_TODAY_IN = "#4cc27e"; // verde ligeramente más intenso que COLOR_IN
+const COLOR_TODAY_OVER = "#ff453a"; // rojo de la paleta de Finance
+
+function dayColor(kcal: number, isToday: boolean): string {
+  if (isToday) return kcal > KCAL_TARGET ? COLOR_TODAY_OVER : COLOR_TODAY_IN;
   if (kcal > KCAL_HIGH) return COLOR_HIGH;
   if (kcal > KCAL_TARGET) return COLOR_OVER;
   return COLOR_IN;
+}
+
+function todayIso(): string {
+  const now = new Date();
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
 }
 
 function shortDay(iso: string): string {
@@ -51,10 +64,48 @@ export function FoodSection({
     );
   }
 
+  const today = todayIso();
   const totalKcal = days.reduce((sum, d) => sum + d.totalCalories, 0);
   const avgKcal = totalKcal / days.length;
   const highest = days.reduce((max, d) => (d.totalCalories > max.totalCalories ? d : max), days[0]);
-  const chartData = days.map((d) => ({ ...d, label: shortDay(d.date) }));
+  const chartData = days.map((d) => ({
+    ...d,
+    label: shortDay(d.date),
+    isToday: d.date === today,
+  }));
+
+  // Etiqueta "Hoy" sobre la barra del día actual: cuánto falta para la meta o
+  // cuánto me pasé. Recharts la invoca por cada barra; devolvemos null salvo hoy.
+  const renderTodayLabel = (props: {
+    x?: string | number;
+    y?: string | number;
+    width?: string | number;
+    index?: number;
+  }) => {
+    const x = Number(props.x ?? 0);
+    const y = Number(props.y ?? 0);
+    const width = Number(props.width ?? 0);
+    const index = props.index ?? 0;
+    const d = chartData[index];
+    if (!d || !d.isToday) return null;
+    const remaining = KCAL_TARGET - d.totalCalories;
+    const over = remaining < 0;
+    const text = over
+      ? `Hoy · +${formatNumber(-remaining, 0)}`
+      : `Hoy · faltan ${formatNumber(remaining, 0)}`;
+    return (
+      <text
+        x={x + width / 2}
+        y={y - 7}
+        textAnchor="middle"
+        fontSize={11}
+        fontWeight={700}
+        fill={over ? COLOR_TODAY_OVER : "#2f9e63"}
+      >
+        {text}
+      </text>
+    );
+  };
 
   return (
     <SectionCard
@@ -72,7 +123,7 @@ export function FoodSection({
       </div>
 
       <ResponsiveContainer width="100%" height={260}>
-        <BarChart data={chartData} margin={{ top: 8, right: 12, bottom: 0, left: -8 }}>
+        <BarChart data={chartData} margin={{ top: 26, right: 12, bottom: 0, left: -8 }}>
           <CartesianGrid strokeDasharray="3 3" className="stroke-black/10" />
           <ReferenceArea
             y1={0}
@@ -89,15 +140,23 @@ export function FoodSection({
             formatter={(value) => [`${formatNumber(Number(value), 0)} kcal`, "Total"]}
           />
           <Bar dataKey="totalCalories" name="kcal" radius={[6, 6, 0, 0]}>
+            <LabelList dataKey="totalCalories" content={renderTodayLabel} />
             {chartData.map((entry) => (
-              <Cell key={entry.date} fill={dayColor(entry.totalCalories)} />
+              <Cell
+                key={entry.date}
+                fill={dayColor(entry.totalCalories, entry.isToday)}
+                stroke={entry.isToday ? "#1d1d1f" : undefined}
+                strokeWidth={entry.isToday ? 1.5 : 0}
+              />
             ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
 
       <p className="mt-2 text-xs text-zinc-400">
-        Banda verde = rango referencial 0–{formatNumber(KCAL_TARGET, 0)} kcal/día.
+        Banda verde = rango referencial 0–{formatNumber(KCAL_TARGET, 0)} kcal/día. La barra
+        de <strong className="font-semibold text-zinc-500">hoy</strong> va en verde si sigues
+        dentro de la meta y en rojo si la superaste.
       </p>
 
       <div className="mt-5 overflow-x-auto">

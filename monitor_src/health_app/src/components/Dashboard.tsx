@@ -121,9 +121,12 @@ export function Dashboard({
         </label>
       </div>
 
-      <HealthSummary items={summaryItems} />
-
+      {/* Alimentación primero: es el dato en tiempo real (se registra a mano
+          en Notion), a diferencia de sueño/entrenamiento que dependen de la
+          carga periódica de Apple Health. */}
       <FoodSection days={foodDays} entries={fFood} />
+
+      <HealthSummary items={summaryItems} />
 
       <SectionCard
         title="🏋️ Entrenamiento"
