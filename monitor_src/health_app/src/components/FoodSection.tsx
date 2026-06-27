@@ -142,12 +142,7 @@ export function FoodSection({
           <Bar dataKey="totalCalories" name="kcal" radius={[6, 6, 0, 0]}>
             <LabelList dataKey="totalCalories" content={renderTodayLabel} />
             {chartData.map((entry) => (
-              <Cell
-                key={entry.date}
-                fill={dayColor(entry.totalCalories, entry.isToday)}
-                stroke={entry.isToday ? "#1d1d1f" : undefined}
-                strokeWidth={entry.isToday ? 1.5 : 0}
-              />
+              <Cell key={entry.date} fill={dayColor(entry.totalCalories, entry.isToday)} />
             ))}
           </Bar>
         </BarChart>
