@@ -61,8 +61,13 @@ export function PageSwitcher({ generatedAt }: { generatedAt: string }) {
       >
         <HeartRateIcon className="h-6 w-6 shrink-0" />
         <div className="flex min-w-0 flex-col leading-tight">
-          <span className="flex items-center gap-1.5">
-            <h1 className="text-[18px] font-semibold tracking-tight sm:text-[22px]">Health</h1>
+          <span className="flex items-center gap-[5px]">
+            <h1
+              className="text-[18px] font-semibold sm:text-[22px]"
+              style={{ fontFamily: SYSTEM_FONT, letterSpacing: "-0.02em", lineHeight: 1 }}
+            >
+              Health
+            </h1>
             <svg
               width="14"
               height="14"
