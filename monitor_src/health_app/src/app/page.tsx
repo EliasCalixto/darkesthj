@@ -2,7 +2,7 @@ import { NOTION_TOKEN } from "@/lib/config";
 import { formatBuildTimestamp } from "@/lib/format";
 import { getFood, getMonthlySummary, getWorkouts } from "@/lib/notion";
 import { Dashboard } from "@/components/Dashboard";
-import { HeartRateIcon } from "@/components/HeartRateIcon";
+import { PageSwitcher } from "@/components/PageSwitcher";
 import { ReloadButton } from "@/components/ReloadButton";
 
 export default async function Home() {
@@ -37,19 +37,7 @@ export default async function Home() {
               <path d="M9.78 3.22a.75.75 0 0 1 0 1.06L6.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" />
             </svg>
           </a>
-          <HeartRateIcon className="h-6 w-6 shrink-0" />
-          <div className="flex min-w-0 flex-col leading-tight">
-            <h1 className="text-[18px] font-semibold tracking-tight sm:text-[22px]">Health</h1>
-            <span
-              className="truncate text-[11px] text-zinc-400 sm:text-[12px]"
-              style={{
-                fontFamily:
-                  '-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, sans-serif',
-              }}
-            >
-              Actualizado: {generatedAt}
-            </span>
-          </div>
+          <PageSwitcher generatedAt={generatedAt} />
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <a
