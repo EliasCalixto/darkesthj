@@ -76,6 +76,18 @@ export default async function Home() {
       </header>
 
       <Dashboard months={months} workouts={workouts} food={food} />
+
+      <footer className="mx-auto w-full max-w-6xl px-4 pb-10 text-xs text-zinc-400 sm:px-6 lg:px-8">
+        Datos sincronizados desde Notion vía GitHub Actions ·{" "}
+        <a
+          href="https://github.com/EliasCalixto/darkesthj"
+          target="_blank"
+          rel="noreferrer"
+          className="text-zinc-500 underline-offset-2 hover:underline"
+        >
+          Repo
+        </a>
+      </footer>
     </>
   );
 }
