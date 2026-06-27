@@ -304,7 +304,16 @@ function showAuthModalUntilUnlocked(envelope) {
 function onDataReady() {
   const { generated_at } = state.data;
   if (generated_at) {
-    $("#generated-at").textContent = `Updated ${new Date(generated_at).toLocaleString()}`;
+    // Mismo formato que el dashboard de Health: "Actualizado: 26 jun 2026, 23:42 UTC".
+    const formatted = new Intl.DateTimeFormat("es-ES", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "UTC",
+    }).format(new Date(generated_at));
+    $("#generated-at").textContent = `Actualizado: ${formatted} UTC`;
   }
 
   const expDb = findDb("Expenses");
