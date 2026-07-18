@@ -31,8 +31,8 @@ function HealthIcon({ className }: { className?: string }) {
       aria-hidden="true"
       className={className}
     >
-      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-      <path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
+      <path d="M12 20.5C12 20.5 3.5 15 3.5 8.75C3.5 6.13 5.4 4.5 7.75 4.5C9.4 4.5 10.9 5.4 12 6.9C13.1 5.4 14.6 4.5 16.25 4.5C18.6 4.5 20.5 6.13 20.5 8.75C20.5 15 12 20.5 12 20.5Z" />
+      <path d="M4 12.5H9.5L11 9L12 15L13 9L14.5 12.5H20" />
     </svg>
   );
 }
@@ -79,7 +79,7 @@ export function PageSwitcher({ generatedAt }: { generatedAt: string }) {
         }}
         className="-mx-1.5 flex min-w-0 cursor-pointer items-center gap-3 rounded-lg px-1.5 py-1 transition-colors hover:bg-zinc-100"
       >
-        <HealthIcon className="h-6 w-6 shrink-0" />
+        <HealthIcon className="h-5 w-5 shrink-0" />
         <div className="flex min-w-0 flex-col gap-px">
           <span className="flex items-center gap-[5px]">
             <h1
