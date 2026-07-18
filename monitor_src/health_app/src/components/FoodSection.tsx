@@ -203,24 +203,31 @@ export function FoodSection({
         dentro de la meta y en rojo si la superaste.
       </p>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]">
-        <div className="min-w-0 rounded-xl border border-black/10 bg-white p-4">
+      {/* items-stretch: en laptop ambas columnas comparten la misma altura de
+          fila. La columna del chart es flex-col con el gráfico en flex-1, así
+          que el chart crece hasta igualar el contenedor de la derecha y no deja
+          hueco abajo. En móvil el gráfico rompe el padding de la tarjeta
+          (-mx-5) para ocupar el ancho completo de la página. */}
+      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)] lg:items-stretch">
+        <div className="flex min-w-0 flex-col bg-white lg:rounded-xl lg:border lg:border-black/10 lg:p-4">
           <h3 className="mb-3 text-sm font-semibold text-zinc-500">
             Promedio por día de la semana
           </h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={weekdayData} margin={{ top: 8, right: 10, bottom: 0, left: -8 }}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-black/10" />
-              <XAxis dataKey="weekday" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} width={44} />
-              <Tooltip
-                contentStyle={{ fontSize: 12, borderRadius: 8 }}
-                labelStyle={{ fontWeight: 600 }}
-                formatter={(value) => [`${formatNumber(Number(value), 0)} kcal`, "Promedio"]}
-              />
-              <Bar dataKey="avgCalories" name="Promedio" fill={COLOR_IN} radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="-mx-5 min-h-[220px] flex-1 lg:mx-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={weekdayData} margin={{ top: 8, right: 10, bottom: 0, left: -8 }}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-black/10" />
+                <XAxis dataKey="weekday" tick={{ fontSize: 11 }} />
+                <YAxis tick={{ fontSize: 11 }} width={44} />
+                <Tooltip
+                  contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                  labelStyle={{ fontWeight: 600 }}
+                  formatter={(value) => [`${formatNumber(Number(value), 0)} kcal`, "Promedio"]}
+                />
+                <Bar dataKey="avgCalories" name="Promedio" fill={COLOR_IN} radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         <div className="rounded-xl border border-black/10 bg-white p-4">

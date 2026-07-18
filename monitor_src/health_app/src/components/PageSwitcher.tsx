@@ -16,23 +16,23 @@ function FinanceIcon({ className }: { className?: string }) {
   );
 }
 
-function FoodIcon({ className }: { className?: string }) {
+// Icono de Health: corazón con pulso, idéntico al favicon de la pestaña
+// (src/app/icon.png). Reemplaza a la antigua "fruta" para que el logo del
+// header coincida con el de la tab.
+function HealthIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true" className={className}>
-      <path
-        d="M24 42c-7.5-4.6-12-11.6-12-19.1 0-5.4 3.3-9.4 8-9.4 1.8 0 3.1.5 4 1.4 0.9-.9 2.2-1.4 4-1.4 4.7 0 8 4 8 9.4C36 30.4 31.5 37.4 24 42Z"
-        fill="#4cc27e"
-      />
-      <path
-        d="M24 14.6c.8-4.8 3.4-7.6 7.7-8.6.2 4.5-2.7 7.6-7.7 8.6Z"
-        fill="#2f9e63"
-      />
-      <path
-        d="M24 14.8c-.4-3.2-1.7-5.4-4-6.8"
-        stroke="#2f9e63"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#4c9d63"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+      <path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
     </svg>
   );
 }
@@ -79,11 +79,11 @@ export function PageSwitcher({ generatedAt }: { generatedAt: string }) {
         }}
         className="-mx-1.5 flex min-w-0 cursor-pointer items-center gap-3 rounded-lg px-1.5 py-1 transition-colors hover:bg-zinc-100"
       >
-        <FoodIcon className="h-6 w-6 shrink-0" />
-        <div className="flex min-w-0 flex-col leading-tight">
+        <HealthIcon className="h-6 w-6 shrink-0" />
+        <div className="flex min-w-0 flex-col gap-px">
           <span className="flex items-center gap-[5px]">
             <h1
-              className="text-[18px] font-semibold sm:text-[22px]"
+              className="text-[18px] font-semibold max-[420px]:text-[16px] min-[721px]:text-[22px]"
               style={{ fontFamily: SYSTEM_FONT, letterSpacing: "-0.02em", lineHeight: 1 }}
             >
               Health
@@ -100,7 +100,7 @@ export function PageSwitcher({ generatedAt }: { generatedAt: string }) {
             </svg>
           </span>
           <span
-            className="truncate text-[11px] text-zinc-400 sm:text-[12px]"
+            className="truncate text-[11px] leading-[1.15] text-zinc-400 min-[721px]:text-[12px]"
             style={{ fontFamily: SYSTEM_FONT }}
           >
             Actualizado: {generatedAt}
@@ -118,7 +118,7 @@ export function PageSwitcher({ generatedAt }: { generatedAt: string }) {
             href="/monitor/health/"
             className="flex items-center gap-2.5 rounded-lg bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-800"
           >
-            <FoodIcon className="h-[18px] w-[18px] shrink-0" />
+            <HealthIcon className="h-[18px] w-[18px] shrink-0" />
             <span>Health</span>
             <span className="ml-auto text-[13px] text-zinc-400">✓</span>
           </a>
