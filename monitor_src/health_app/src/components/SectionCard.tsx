@@ -10,7 +10,7 @@ export function SectionCard({
   children: ReactNode;
 }) {
   return (
-    <section className="min-w-0 rounded-2xl border border-black/10 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-zinc-900">
+    <section className="min-w-0 rounded-2xl border border-black/10 bg-white p-4 shadow-sm sm:p-5 dark:border-white/10 dark:bg-zinc-900">
       <div className="mb-4">
         <h2 className="text-lg font-semibold">{title}</h2>
         {description && (

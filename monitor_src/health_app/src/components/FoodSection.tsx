@@ -203,17 +203,19 @@ export function FoodSection({
         dentro de la meta y en rojo si la superaste.
       </p>
 
-      {/* items-stretch: en laptop ambas columnas comparten la misma altura de
-          fila. La columna del chart es flex-col con el gráfico en flex-1, así
-          que el chart crece hasta igualar el contenedor de la derecha y no deja
-          hueco abajo. En móvil el gráfico rompe el padding de la tarjeta
-          (-mx-5) para ocupar el ancho completo de la página. */}
-      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)] lg:items-stretch">
+      {/* grid-cols-1 en móvil: una columna minmax(0,1fr) acotada al contenedor.
+          Sin esto, la columna implícita 'auto' se estira al max-content de los
+          nombres largos de "Comidas más calóricas" y arrastra al chart,
+          desbordando la página. En laptop, items-stretch hace que ambas columnas
+          compartan altura; la del chart es flex-col con el gráfico en flex-1,
+          así que crece hasta igualar el contenedor de la derecha sin dejar
+          hueco abajo. */}
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)] lg:items-stretch">
         <div className="flex min-w-0 flex-col bg-white lg:rounded-xl lg:border lg:border-black/10 lg:p-4">
           <h3 className="mb-3 text-sm font-semibold text-zinc-500">
             Promedio por día de la semana
           </h3>
-          <div className="-mx-5 min-h-[220px] flex-1 lg:mx-0">
+          <div className="h-[220px] w-full min-w-0 lg:h-auto lg:min-h-[220px] lg:flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={weekdayData} margin={{ top: 8, right: 10, bottom: 0, left: -8 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-black/10" />
