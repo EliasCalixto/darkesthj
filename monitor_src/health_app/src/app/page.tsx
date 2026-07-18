@@ -22,7 +22,10 @@ export default async function Home() {
 
   return (
     <>
-      <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[var(--border)] bg-white/95 px-4 py-3 backdrop-blur sm:px-8 sm:py-[18px]">
+      {/* Mismas medidas que el topbar de Finance (monitor_src/finance/styles.css
+          .topbar): 14px 16px en móvil, 18px 32px en escritorio con el mismo
+          corte a 720px, fondo blanco sólido y backdrop saturate+blur. */}
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[var(--border)] bg-white px-4 py-[14px] [backdrop-filter:saturate(180%)_blur(20px)] min-[721px]:px-8 min-[721px]:py-[18px]">
         <div className="flex min-w-0 items-center gap-3">
           <a
             href="/monitor/"

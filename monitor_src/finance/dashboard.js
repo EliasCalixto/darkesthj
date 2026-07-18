@@ -304,16 +304,18 @@ function showAuthModalUntilUnlocked(envelope) {
 function onDataReady() {
   const { generated_at } = state.data;
   if (generated_at) {
-    // Mismo formato que el dashboard de Health: "Actualizado: 26 jun 2026, 23:42 UTC".
+    // Última consulta a Notion (cuándo se sincronizó data.json). Mismo formato
+    // que el dashboard de Health y siempre en hora de Perú (America/Lima,
+    // UTC−5), sin importar la zona horaria del visitante.
     const formatted = new Intl.DateTimeFormat("es-ES", {
       day: "2-digit",
       month: "short",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-      timeZone: "UTC",
+      timeZone: "America/Lima",
     }).format(new Date(generated_at));
-    $("#generated-at").textContent = `Actualizado: ${formatted} UTC`;
+    $("#generated-at").textContent = `Actualizado: ${formatted}`;
   }
 
   const expDb = findDb("Expenses");
