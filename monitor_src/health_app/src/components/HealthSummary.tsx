@@ -1,5 +1,4 @@
-// Resumen general (hero) de los 3 aspectos más importantes: Alimentación,
-// Sueño y Entrenamiento. Tarjetas blancas con la paleta de Finance.
+// Resumen general de alimentación. Tarjetas blancas con la paleta de Finance.
 
 export type SummaryStatus = "good" | "warn" | "bad" | "neutral";
 

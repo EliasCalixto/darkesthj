@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { HeartRateIcon } from "./HeartRateIcon";
 
 const SYSTEM_FONT =
   '-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, sans-serif';
@@ -13,6 +12,27 @@ function FinanceIcon({ className }: { className?: string }) {
       <rect x="8" y="36" width="12" height="20" rx="3" fill="#5DA3C8" />
       <rect x="26" y="22" width="12" height="34" rx="3" fill="#52B373" />
       <rect x="44" y="10" width="12" height="46" rx="3" fill="#E86868" />
+    </svg>
+  );
+}
+
+function FoodIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true" className={className}>
+      <path
+        d="M24 42c-7.5-4.6-12-11.6-12-19.1 0-5.4 3.3-9.4 8-9.4 1.8 0 3.1.5 4 1.4 0.9-.9 2.2-1.4 4-1.4 4.7 0 8 4 8 9.4C36 30.4 31.5 37.4 24 42Z"
+        fill="#4cc27e"
+      />
+      <path
+        d="M24 14.6c.8-4.8 3.4-7.6 7.7-8.6.2 4.5-2.7 7.6-7.7 8.6Z"
+        fill="#2f9e63"
+      />
+      <path
+        d="M24 14.8c-.4-3.2-1.7-5.4-4-6.8"
+        stroke="#2f9e63"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -59,7 +79,7 @@ export function PageSwitcher({ generatedAt }: { generatedAt: string }) {
         }}
         className="-mx-1.5 flex min-w-0 cursor-pointer items-center gap-3 rounded-lg px-1.5 py-1 transition-colors hover:bg-zinc-100"
       >
-        <HeartRateIcon className="h-6 w-6 shrink-0" />
+        <FoodIcon className="h-6 w-6 shrink-0" />
         <div className="flex min-w-0 flex-col leading-tight">
           <span className="flex items-center gap-[5px]">
             <h1
@@ -98,7 +118,7 @@ export function PageSwitcher({ generatedAt }: { generatedAt: string }) {
             href="/monitor/health/"
             className="flex items-center gap-2.5 rounded-lg bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-800"
           >
-            <HeartRateIcon className="h-[18px] w-[18px] shrink-0" />
+            <FoodIcon className="h-[18px] w-[18px] shrink-0" />
             <span>Health</span>
             <span className="ml-auto text-[13px] text-zinc-400">✓</span>
           </a>

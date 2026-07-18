@@ -17,9 +17,9 @@ import type { FoodDay, FoodEntry } from "@/lib/types";
 import { SectionCard } from "./SectionCard";
 
 // Rango referencial 0–1800 kcal/día (banda verde). Por encima se usan tonos
-// suaves de la paleta Apple/Finance en vez de rojos/naranjas saturados.
-const KCAL_TARGET = 1800; // tope del rango referencial
-const KCAL_HIGH = 2500; // a partir de aquí, "muy por encima"
+// suaves de la paleta del dashboard en vez de rojos/naranjas saturados.
+export const KCAL_TARGET = 1800; // tope del rango referencial
+export const KCAL_HIGH = 2500; // a partir de aquí, "muy por encima"
 
 const COLOR_IN = "#7ed0a3"; // dentro del rango — verde ligero (paleta Finance)
 const COLOR_OVER = "#f0d27a"; // por encima — amarillo sutil
@@ -49,6 +49,36 @@ function shortDay(iso: string): string {
   return new Intl.DateTimeFormat("es-ES", { day: "2-digit", month: "short" }).format(date);
 }
 
+const WEEKDAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"] as const;
+
+function weekdayIndex(iso: string): number {
+  const date = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return 0;
+  return (date.getDay() + 6) % 7;
+}
+
+function weekdayStats(days: FoodDay[]) {
+  const rows = WEEKDAYS.map((weekday) => ({
+    weekday,
+    totalCalories: 0,
+    entries: 0,
+    days: 0,
+    avgCalories: 0,
+  }));
+
+  for (const day of days) {
+    const row = rows[weekdayIndex(day.date)];
+    row.totalCalories += day.totalCalories;
+    row.entries += day.count;
+    row.days += 1;
+  }
+
+  return rows.map((row) => ({
+    ...row,
+    avgCalories: row.days > 0 ? row.totalCalories / row.days : 0,
+  }));
+}
+
 export function FoodSection({
   days,
   entries,
@@ -68,6 +98,15 @@ export function FoodSection({
   const totalKcal = days.reduce((sum, d) => sum + d.totalCalories, 0);
   const avgKcal = totalKcal / days.length;
   const highest = days.reduce((max, d) => (d.totalCalories > max.totalCalories ? d : max), days[0]);
+  const entriesWithCalories = entries.filter((entry) => entry.calories != null);
+  const avgMealKcal =
+    entriesWithCalories.length > 0 ? totalKcal / entriesWithCalories.length : null;
+  const daysInTarget = days.filter((d) => d.totalCalories <= KCAL_TARGET).length;
+  const targetRate = Math.round((daysInTarget / days.length) * 100);
+  const weekdayData = weekdayStats(days);
+  const topEntries = [...entriesWithCalories]
+    .sort((a, b) => (b.calories ?? 0) - (a.calories ?? 0))
+    .slice(0, 5);
   const chartData = days.map((d) => ({
     ...d,
     label: shortDay(d.date),
@@ -112,14 +151,24 @@ export function FoodSection({
       title="🍎 Alimentación"
       description={`${entries.length} registros en ${days.length} día(s)`}
     >
-      <div className="mb-5 grid grid-cols-3 gap-3">
+      <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-5">
         <FoodKpi label="Promedio diario" value={`${formatNumber(avgKcal, 0)}`} unit="kcal" />
+        <FoodKpi label="Total del periodo" value={`${formatNumber(totalKcal, 0)}`} unit="kcal" />
+        <FoodKpi
+          label="Promedio por comida"
+          value={avgMealKcal != null ? `${formatNumber(avgMealKcal, 0)}` : "—"}
+          unit="kcal"
+        />
         <FoodKpi
           label="Día más cargado"
           value={`${formatNumber(highest.totalCalories, 0)}`}
           unit={`kcal · ${shortDay(highest.date)}`}
         />
-        <FoodKpi label="Días registrados" value={`${days.length}`} unit="días" />
+        <FoodKpi
+          label="Días en meta"
+          value={`${targetRate}`}
+          unit={`% · ${daysInTarget}/${days.length}`}
+        />
       </div>
 
       <ResponsiveContainer width="100%" height={260}>
@@ -154,6 +203,55 @@ export function FoodSection({
         dentro de la meta y en rojo si la superaste.
       </p>
 
+      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]">
+        <div className="min-w-0 rounded-xl border border-black/10 bg-white p-4">
+          <h3 className="mb-3 text-sm font-semibold text-zinc-500">
+            Promedio por día de la semana
+          </h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={weekdayData} margin={{ top: 8, right: 10, bottom: 0, left: -8 }}>
+              <CartesianGrid strokeDasharray="3 3" className="stroke-black/10" />
+              <XAxis dataKey="weekday" tick={{ fontSize: 11 }} />
+              <YAxis tick={{ fontSize: 11 }} width={44} />
+              <Tooltip
+                contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                labelStyle={{ fontWeight: 600 }}
+                formatter={(value) => [`${formatNumber(Number(value), 0)} kcal`, "Promedio"]}
+              />
+              <Bar dataKey="avgCalories" name="Promedio" fill={COLOR_IN} radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="rounded-xl border border-black/10 bg-white p-4">
+          <h3 className="mb-3 text-sm font-semibold text-zinc-500">Comidas más calóricas</h3>
+          {topEntries.length === 0 ? (
+            <p className="text-sm text-zinc-500">No hay comidas con calorías registradas.</p>
+          ) : (
+            <ol className="flex flex-col gap-2">
+              {topEntries.map((entry, index) => (
+                <li
+                  key={`${entry.date}-${entry.name}-${index}`}
+                  className="flex items-start justify-between gap-3 rounded-lg bg-zinc-50 px-3 py-2"
+                >
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-medium text-zinc-800">
+                      {entry.name || "—"}
+                    </span>
+                    <span className="text-xs text-zinc-400">
+                      {shortDay(entry.date.slice(0, 10))}
+                    </span>
+                  </span>
+                  <span className="shrink-0 text-sm font-semibold tabular-nums text-zinc-700">
+                    {formatNumber(entry.calories, 0)} kcal
+                  </span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      </div>
+
       <div className="mt-5 overflow-x-auto">
         <h3 className="mb-2 text-sm font-semibold text-zinc-500">Últimas comidas</h3>
         <table className="w-full min-w-[360px] text-left text-sm">
@@ -186,7 +284,7 @@ export function FoodSection({
 
 function FoodKpi({ label, value, unit }: { label: string; value: string; unit: string }) {
   return (
-    <div className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-black/10 bg-white p-4 shadow-sm">
       <p className="text-sm text-zinc-500">{label}</p>
       <p className="mt-1 text-2xl font-semibold tabular-nums">
         {value}

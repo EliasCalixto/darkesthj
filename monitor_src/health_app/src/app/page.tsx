@@ -1,6 +1,7 @@
 import { NOTION_TOKEN } from "@/lib/config";
 import { formatBuildTimestamp } from "@/lib/format";
-import { getFood, getMonthlySummary, getWorkouts } from "@/lib/notion";
+import { getFood } from "@/lib/notion";
+import type { FoodEntry } from "@/lib/types";
 import { Dashboard } from "@/components/Dashboard";
 import { PageSwitcher } from "@/components/PageSwitcher";
 import { ReloadButton } from "@/components/ReloadButton";
@@ -10,13 +11,9 @@ export default async function Home() {
     return <SetupNotice />;
   }
 
-  let months, workouts, food;
+  let food: FoodEntry[];
   try {
-    [months, workouts, food] = await Promise.all([
-      getMonthlySummary(),
-      getWorkouts(),
-      getFood(),
-    ]);
+    food = await getFood();
   } catch (error) {
     return <ErrorNotice error={error} />;
   }
@@ -75,10 +72,10 @@ export default async function Home() {
         </div>
       </header>
 
-      <Dashboard months={months} workouts={workouts} food={food} />
+      <Dashboard food={food} />
 
       <footer className="mx-auto w-full max-w-6xl px-4 pb-10 text-xs text-zinc-400 sm:px-6 lg:px-8">
-        Datos sincronizados desde Notion vía GitHub Actions ·{" "}
+        Alimentación sincronizada desde Notion vía GitHub Actions ·{" "}
         <a
           href="https://github.com/EliasCalixto/darkesthj"
           target="_blank"
@@ -101,8 +98,8 @@ function SetupNotice() {
         <code className="rounded bg-black/10 px-1 py-0.5 dark:bg-white/10">NOTION_TOKEN</code> con
         el secreto de tu integración interna de Notion y opcionalmente{" "}
         <code className="rounded bg-black/10 px-1 py-0.5 dark:bg-white/10">NOTION_PAGE_ID</code> con
-        el ID de tu página &quot;Health&quot;. Recuerda compartir la página y sus bases de datos con la
-        integración desde Notion.
+        el ID de tu página &quot;Health&quot;. Recuerda compartir la página y la base de datos de
+        alimentación con la integración desde Notion.
       </p>
     </div>
   );
@@ -118,7 +115,7 @@ function ErrorNotice({ error }: { error: unknown }) {
       </p>
       <p className="text-sm text-zinc-400">
         Verifica que NOTION_TOKEN sea válido y que la integración tenga acceso a la página
-        &quot;Health&quot; y a sus bases de datos (📅 Resumen Mensual, 🏃 Entrenamientos, 🧠 Terapia).
+        &quot;Health&quot; y a la base de datos 🍎 Alimentación.
       </p>
     </div>
   );

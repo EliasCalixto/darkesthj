@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Optional
 
 import os
 import time
 
 import requests
-from flask import Flask, render_template, url_for
+from flask import Flask, abort, render_template, send_from_directory, url_for
 
 
 @dataclass(frozen=True)
@@ -33,6 +34,9 @@ app.config.update(
 
 SITE_ORIGIN = os.getenv("SITE_ORIGIN", "https://darkesthj.com").rstrip("/")
 SOCIAL_IMAGE_PATH = "/static/assets/favicon.png"
+BASE_DIR = Path(__file__).resolve().parent
+MONITOR_FINANCE_ROOT = BASE_DIR / "monitor_src" / "finance"
+MONITOR_HEALTH_ROOT = BASE_DIR / "docs" / "monitor" / "health"
 
 
 @app.context_processor
@@ -119,6 +123,33 @@ def easytech():
 @app.route("/monitor/")
 def monitor():
     return render_template("monitor.html")
+
+
+def _serve_static_subsite(root: Path, filename: str = ""):
+    if not root.exists():
+        abort(404)
+
+    target = root / filename
+    if not filename or target.is_dir():
+        filename = str(Path(filename) / "index.html") if filename else "index.html"
+        target = root / filename
+
+    if not target.is_file():
+        abort(404)
+
+    return send_from_directory(root, filename)
+
+
+@app.route("/monitor/finance/")
+@app.route("/monitor/finance/<path:filename>")
+def monitor_finance(filename: str = ""):
+    return _serve_static_subsite(MONITOR_FINANCE_ROOT, filename)
+
+
+@app.route("/monitor/health/")
+@app.route("/monitor/health/<path:filename>")
+def monitor_health(filename: str = ""):
+    return _serve_static_subsite(MONITOR_HEALTH_ROOT, filename)
 
 
 @app.route("/budgetly/")
