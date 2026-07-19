@@ -315,7 +315,7 @@ function onDataReady() {
       minute: "2-digit",
       timeZone: "America/Lima",
     }).format(new Date(generated_at));
-    $("#generated-at").textContent = `Actualizado: ${formatted}`;
+    $("#generated-at").textContent = `Actualizado: ${formatted} (Perú)`;
   }
 
   const expDb = findDb("Expenses");
