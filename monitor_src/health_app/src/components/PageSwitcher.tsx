@@ -77,7 +77,10 @@ export function PageSwitcher({ generatedAt }: { generatedAt: string }) {
             setOpen((v) => !v);
           }
         }}
-        className="-mx-1.5 flex min-w-0 cursor-pointer items-center gap-3 rounded-lg px-1.5 py-1 transition-colors hover:bg-zinc-100"
+        // Mismas medidas que .switcher-btn de Finance (monitor_src/finance/styles.css):
+        // padding 3px 7px con margin -3px -7px, para que el margen negativo vertical
+        // cancele el padding y el botón no añada altura al header (así ambos coinciden).
+        className="-mx-[7px] -my-[3px] flex min-w-0 cursor-pointer items-center gap-3 rounded-[9px] px-[7px] py-[3px] transition-colors hover:bg-zinc-100"
       >
         <HealthIcon className="h-6 w-6 shrink-0" />
         <div className="flex min-w-0 flex-col gap-px">
