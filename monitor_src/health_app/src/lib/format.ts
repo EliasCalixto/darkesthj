@@ -21,7 +21,7 @@ export function formatDate(value: string | null): string {
 // la marca de build == última actualización de datos). Siempre en hora de Perú
 // (America/Lima, UTC−5 sin horario de verano), independientemente del visitante.
 export function formatBuildTimestamp(date: Date): string {
-  return new Intl.DateTimeFormat("es-ES", {
+  const formatted = new Intl.DateTimeFormat("es-ES", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -29,6 +29,7 @@ export function formatBuildTimestamp(date: Date): string {
     minute: "2-digit",
     timeZone: "America/Lima",
   }).format(date);
+  return `${formatted} (Perú)`;
 }
 
 export function formatDuration(minutes: number | null): string {

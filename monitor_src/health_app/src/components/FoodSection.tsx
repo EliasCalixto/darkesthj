@@ -263,12 +263,12 @@ export function FoodSection({
 
       <div className="mt-5 overflow-x-auto">
         <h3 className="mb-2 text-sm font-semibold text-zinc-500">Últimas comidas</h3>
-        <table className="w-full min-w-[360px] text-left text-sm">
+        <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-black/10 text-zinc-500">
-              <th className="py-2 pr-4 font-medium">Fecha</th>
-              <th className="py-2 pr-4 font-medium">Comida</th>
-              <th className="py-2 pr-4 font-medium text-right">Calorías</th>
+              <th className="py-2 pr-3 font-medium">Fecha</th>
+              <th className="py-2 pr-3 font-medium">Comida</th>
+              <th className="py-2 pr-3 font-medium text-right">Calorías</th>
             </tr>
           </thead>
           <tbody>
@@ -277,9 +277,9 @@ export function FoodSection({
                 key={`${entry.date}-${entry.name}-${i}`}
                 className="border-b border-black/5 last:border-0 transition-colors hover:bg-black/[0.03]"
               >
-                <td className="py-2 pr-4 whitespace-nowrap">{shortDay(entry.date.slice(0, 10))}</td>
-                <td className="py-2 pr-4">{entry.name || "—"}</td>
-                <td className="py-2 pr-4 whitespace-nowrap text-right tabular-nums">
+                <td className="py-2 pr-3 whitespace-nowrap">{shortDay(entry.date.slice(0, 10))}</td>
+                <td className="py-2 pr-3">{entry.name || "—"}</td>
+                <td className="py-2 pr-3 whitespace-nowrap text-right tabular-nums">
                   {entry.calories != null ? `${formatNumber(entry.calories, 0)} kcal` : "—"}
                 </td>
               </tr>
