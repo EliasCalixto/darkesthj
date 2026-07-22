@@ -40,6 +40,9 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_PAGE_ID: ${{ secrets.NOTION_PAGE_ID_HEALTH }}
+          # Mismo secret que Finance: si está definido, los datos de Health se
+          # publican cifrados y el panel pide la passphrase para desbloquearse.
+          DATA_PASSPHRASE: ${{ secrets.DATA_PASSPHRASE }}
           NEXT_BASE_PATH: /monitor/health
         run: npm run build
 

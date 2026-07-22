@@ -1,5 +1,6 @@
 import { NOTION_TOKEN } from "@/lib/config";
 import { formatBuildTimestamp } from "@/lib/format";
+import { buildGate } from "@/lib/gate";
 import { getFood } from "@/lib/notion";
 import type { FoodEntry } from "@/lib/types";
 import { Dashboard } from "@/components/Dashboard";
@@ -18,6 +19,10 @@ export default async function Home() {
     return <ErrorNotice error={error} />;
   }
 
+  // Si DATA_PASSPHRASE está configurada (el MISMO secret que Finance), los
+  // datos viajan cifrados al cliente y el panel pide la passphrase; si no,
+  // viajan en claro (passphrase opcional).
+  const gate = buildGate({ food });
   const generatedAt = formatBuildTimestamp(new Date());
 
   return (
@@ -75,7 +80,7 @@ export default async function Home() {
         </div>
       </header>
 
-      <Dashboard food={food} />
+      <Dashboard gate={gate} />
 
       <footer className="mx-auto w-full max-w-6xl px-4 pb-10 text-xs text-zinc-400 sm:px-6 lg:px-8">
         Alimentación sincronizada desde Notion vía GitHub Actions ·{" "}
