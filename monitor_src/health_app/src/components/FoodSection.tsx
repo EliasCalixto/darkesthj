@@ -24,12 +24,18 @@ export const KCAL_HIGH = 2500; // a partir de aquí, "muy por encima"
 
 const COLOR_IN = "#7ed0a3"; // dentro del rango — verde ligero (paleta Finance)
 const COLOR_OVER = "#f0d27a"; // por encima — amarillo sutil
-const COLOR_HIGH = "#ff453a"; // muy por encima — rojo de la paleta de Finance
+const COLOR_HIGH = "#e0776c"; // muy por encima — rojo coral, al tono de los otros dos
 
 // Día actual (en tiempo real): verde algo más intenso si aún voy dentro de la
-// meta, rojo de la paleta de Finance si ya me pasé.
+// meta, el mismo rojo suave del tramo alto si ya me pasé.
 const COLOR_TODAY_IN = "#4cc27e"; // verde ligeramente más intenso que COLOR_IN
-const COLOR_TODAY_OVER = "#ff453a"; // rojo de la paleta de Finance
+const COLOR_TODAY_OVER = COLOR_HIGH;
+
+// Los rellenos son claros a propósito, pero como texto pequeño no contrastan
+// sobre blanco; para las etiquetas usamos la versión oscura de cada tono (mismo
+// criterio que el verde #2f9e63 frente al relleno #4cc27e).
+const COLOR_OVER_TEXT = "#b5493c";
+const COLOR_IN_TEXT = "#2f9e63";
 
 function dayColor(kcal: number, isToday: boolean): string {
   if (isToday) return kcal > KCAL_TARGET ? COLOR_TODAY_OVER : COLOR_TODAY_IN;
@@ -140,7 +146,7 @@ export function FoodSection({
         textAnchor="middle"
         fontSize={11}
         fontWeight={700}
-        fill={over ? COLOR_TODAY_OVER : "#2f9e63"}
+        fill={over ? COLOR_OVER_TEXT : COLOR_IN_TEXT}
       >
         {text}
       </text>
@@ -201,7 +207,7 @@ export function FoodSection({
       <p className="mt-2 text-xs text-zinc-400">
         Banda verde = rango referencial 0–{formatNumber(KCAL_TARGET, 0)} kcal/día. En amarillo
         los días por encima de la meta y en{" "}
-        <strong className="font-semibold text-[#ff453a]">rojo</strong> los que superan{" "}
+        <strong className="font-semibold text-[#b5493c]">rojo</strong> los que superan{" "}
         {formatNumber(KCAL_HIGH, 0)} kcal. La barra de{" "}
         <strong className="font-semibold text-zinc-500">hoy</strong> va en verde si sigues
         dentro de la meta y en rojo si la superaste.
