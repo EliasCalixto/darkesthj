@@ -16,14 +16,15 @@ import { formatNumber } from "@/lib/format";
 import type { FoodDay, FoodEntry } from "@/lib/types";
 import { SectionCard } from "./SectionCard";
 
-// Rango referencial 0–1800 kcal/día (banda verde). Por encima se usan tonos
-// suaves de la paleta del dashboard en vez de rojos/naranjas saturados.
+// Rango referencial 0–1800 kcal/día (banda verde). Justo por encima se usa un
+// amarillo suave; al pasar el límite alto la barra va en rojo para que el
+// exceso se vea de un vistazo.
 export const KCAL_TARGET = 1800; // tope del rango referencial
 export const KCAL_HIGH = 2500; // a partir de aquí, "muy por encima"
 
 const COLOR_IN = "#7ed0a3"; // dentro del rango — verde ligero (paleta Finance)
 const COLOR_OVER = "#f0d27a"; // por encima — amarillo sutil
-const COLOR_HIGH = "#e6c050"; // muy por encima — amarillo/dorado sutil
+const COLOR_HIGH = "#ff453a"; // muy por encima — rojo de la paleta de Finance
 
 // Día actual (en tiempo real): verde algo más intenso si aún voy dentro de la
 // meta, rojo de la paleta de Finance si ya me pasé.
@@ -198,8 +199,11 @@ export function FoodSection({
       </ResponsiveContainer>
 
       <p className="mt-2 text-xs text-zinc-400">
-        Banda verde = rango referencial 0–{formatNumber(KCAL_TARGET, 0)} kcal/día. La barra
-        de <strong className="font-semibold text-zinc-500">hoy</strong> va en verde si sigues
+        Banda verde = rango referencial 0–{formatNumber(KCAL_TARGET, 0)} kcal/día. En amarillo
+        los días por encima de la meta y en{" "}
+        <strong className="font-semibold text-[#ff453a]">rojo</strong> los que superan{" "}
+        {formatNumber(KCAL_HIGH, 0)} kcal. La barra de{" "}
+        <strong className="font-semibold text-zinc-500">hoy</strong> va en verde si sigues
         dentro de la meta y en rojo si la superaste.
       </p>
 
