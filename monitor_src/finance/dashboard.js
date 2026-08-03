@@ -12,9 +12,9 @@ const RESUMEN_COLUMNS = [
 const CATEGORY_COLORS = {
   Savings: "#8dbad6",
   Setup: "#9bc2e7",
-  Studies: "#abb9d4",
-  Home: "#8ea9db",
-  Personal: "#c7aee0",
+  Studies: "#8ea9db",
+  Home: "#abb9d4",
+  Personal: "#7a9cc6",
   Enjoy: "#b9f5c4",
   Losses: "#fd9a9a",
   Fixed: "#f8ccad",
