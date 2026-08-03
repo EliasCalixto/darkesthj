@@ -12,19 +12,26 @@ const RESUMEN_COLUMNS = [
 const CATEGORY_COLORS = {
   Savings: "#8dbad6",
   Setup: "#9bc2e7",
-  Home: "#8ea9db",
   Studies: "#abb9d4",
+  Home: "#8ea9db",
+  Personal: "#c7aee0",
   Enjoy: "#b9f5c4",
   Losses: "#fd9a9a",
   Fixed: "#f8ccad",
   Cashout: "#fef2cb",
 };
 
+// Orden en que las categorías salen en donut, barras, líneas y chips. Replica
+// el panel "Groups" de Notion; si allá se reordena o se agrega una categoría,
+// hay que reflejarlo aquí. Ojo: sumByCategoryOrdered() descarta los gastos cuya
+// categoría no esté en esta lista, así que una categoría nueva que falte aquí
+// desaparece de los gráficos sin aviso.
 const CATEGORY_ORDER = [
   "Savings",
   "Setup",
-  "Home",
   "Studies",
+  "Home",
+  "Personal",
   "Enjoy",
   "Losses",
   "Fixed",
