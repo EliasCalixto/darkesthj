@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { HeartRateIcon } from "./HeartRateIcon";
 
 const SYSTEM_FONT =
   '-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, sans-serif';
@@ -12,27 +13,6 @@ function FinanceIcon({ className }: { className?: string }) {
       <rect x="8" y="36" width="12" height="20" rx="3" fill="#5DA3C8" />
       <rect x="26" y="22" width="12" height="34" rx="3" fill="#52B373" />
       <rect x="44" y="10" width="12" height="46" rx="3" fill="#E86868" />
-    </svg>
-  );
-}
-
-// Icono de Health: corazón con pulso, idéntico al favicon de la pestaña
-// (src/app/icon.png). Reemplaza a la antigua "fruta" para que el logo del
-// header coincida con el de la tab.
-function HealthIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#4c9d63"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M12 20.5C12 20.5 3.5 15 3.5 8.75C3.5 6.13 5.4 4.5 7.75 4.5C9.4 4.5 10.9 5.4 12 6.9C13.1 5.4 14.6 4.5 16.25 4.5C18.6 4.5 20.5 6.13 20.5 8.75C20.5 15 12 20.5 12 20.5Z" />
-      <path d="M4 12.5H9.5L11 9L12 15L13 9L14.5 12.5H20" />
     </svg>
   );
 }
@@ -82,7 +62,7 @@ export function PageSwitcher({ generatedAt }: { generatedAt: string }) {
         // cancele el padding y el botón no añada altura al header (así ambos coinciden).
         className="-mx-[7px] -my-[3px] flex min-w-0 cursor-pointer items-center gap-3 rounded-[9px] px-[7px] py-[3px] transition-colors hover:bg-zinc-100"
       >
-        <HealthIcon className="h-6 w-6 shrink-0" />
+        <HeartRateIcon className="h-6 w-6 shrink-0" />
         <div className="flex min-w-0 flex-col gap-px">
           <span className="flex items-center gap-[5px]">
             <h1
@@ -121,7 +101,7 @@ export function PageSwitcher({ generatedAt }: { generatedAt: string }) {
             href="/monitor/health/"
             className="flex items-center gap-2.5 rounded-lg bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-800"
           >
-            <HealthIcon className="h-[18px] w-[18px] shrink-0" />
+            <HeartRateIcon className="h-[18px] w-[18px] shrink-0" />
             <span>Health</span>
             <span className="ml-auto text-[13px] text-zinc-400">✓</span>
           </a>
