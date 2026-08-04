@@ -10,10 +10,11 @@ import {
   PERIOD_OPTIONS,
   type Period,
 } from "@/lib/period";
-import { summarizeFoodByDay } from "@/lib/stats";
+import { summarizeFoodByDay, summarizeMacros } from "@/lib/stats";
 import type { FoodEntry } from "@/lib/types";
 import { FoodSection, KCAL_HIGH, KCAL_TARGET } from "./FoodSection";
 import { HealthSummary, type SummaryItem } from "./HealthSummary";
+import { MacroSection } from "./MacroSection";
 
 // Misma clave que Finance (mismo origen darkesthj.com), así un solo desbloqueo
 // sirve para ambos paneles cuando comparten DATA_PASSPHRASE.
@@ -91,6 +92,7 @@ function FoodPanel({ food }: { food: FoodEntry[] }) {
   );
 
   const foodDays = useMemo(() => summarizeFoodByDay(fFood), [fFood]);
+  const macros = useMemo(() => summarizeMacros(fFood), [fFood]);
 
   const periodLabel = PERIOD_OPTIONS.find((o) => o.value === period)?.label ?? "";
 
@@ -188,6 +190,8 @@ function FoodPanel({ food }: { food: FoodEntry[] }) {
       <HealthSummary items={summaryItems} />
 
       <FoodSection days={foodDays} entries={fFood} />
+
+      <MacroSection split={macros} days={foodDays} totalMeals={fFood.length} />
     </>
   );
 }
