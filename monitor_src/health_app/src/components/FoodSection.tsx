@@ -18,8 +18,8 @@ import { SectionCard } from "./SectionCard";
 
 // Tres bandas de calorías diarias: hasta la meta (verde), entre la meta y el
 // límite alto (naranja) y por encima del límite (rojo).
-export const KCAL_TARGET = 1600; // meta diaria
-export const KCAL_HIGH = 1800; // a partir de aquí, "muy por encima"
+export const KCAL_TARGET = 1650; // meta diaria
+export const KCAL_HIGH = 1850; // a partir de aquí, "muy por encima"
 
 // Verde → naranja → rojo es el patrón semáforo, el que peor se comporta en
 // daltonismo: el naranja tiende a colapsar contra el rojo. Estos tres pasos se
