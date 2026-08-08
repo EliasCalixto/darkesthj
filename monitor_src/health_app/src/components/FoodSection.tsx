@@ -16,32 +16,42 @@ import { formatNumber } from "@/lib/format";
 import type { FoodDay, FoodEntry } from "@/lib/types";
 import { SectionCard } from "./SectionCard";
 
-// Rango referencial 0–1800 kcal/día (banda verde). Justo por encima se usa un
-// amarillo suave; al pasar el límite alto la barra va en rojo para que el
-// exceso se vea de un vistazo.
-export const KCAL_TARGET = 1800; // tope del rango referencial
-export const KCAL_HIGH = 2500; // a partir de aquí, "muy por encima"
+// Tres bandas de calorías diarias: hasta la meta (verde), entre la meta y el
+// límite alto (naranja) y por encima del límite (rojo).
+export const KCAL_TARGET = 1600; // meta diaria
+export const KCAL_HIGH = 1800; // a partir de aquí, "muy por encima"
 
-const COLOR_IN = "#7ed0a3"; // dentro del rango — verde ligero (paleta Finance)
-const COLOR_OVER = "#f0d27a"; // por encima — amarillo sutil
-const COLOR_HIGH = "#e0776c"; // muy por encima — rojo coral, al tono de los otros dos
+// Verde → naranja → rojo es el patrón semáforo, el que peor se comporta en
+// daltonismo: el naranja tiende a colapsar contra el rojo. Estos tres pasos se
+// eligieron con el validador de dataviz para que el peor par adyacente quede en
+// ΔE 8.2 con protanopia y 15.5 en visión normal, por encima de ambos pisos.
+// Si se retoca alguno, hay que volver a validar el trío completo.
+const COLOR_IN = "#7ed0a3"; // dentro de la meta — verde ligero (paleta Finance)
+const COLOR_OVER = "#f0b460"; // pasada la meta — naranja suave
+const COLOR_HIGH = "#e0776c"; // pasado el límite alto — rojo coral
 
-// Día actual (en tiempo real): verde algo más intenso si aún voy dentro de la
-// meta, el mismo rojo suave del tramo alto si ya me pasé.
+// Día actual (en tiempo real): verde algo más intenso mientras siga dentro de
+// la meta. Por encima no tiene color propio, usa las mismas bandas que el resto
+// para que el umbral se lea igual en cualquier barra.
 const COLOR_TODAY_IN = "#4cc27e"; // verde ligeramente más intenso que COLOR_IN
-const COLOR_TODAY_OVER = COLOR_HIGH;
 
 // Los rellenos son claros a propósito, pero como texto pequeño no contrastan
-// sobre blanco; para las etiquetas usamos la versión oscura de cada tono (mismo
-// criterio que el verde #2f9e63 frente al relleno #4cc27e).
-const COLOR_OVER_TEXT = "#b5493c";
+// sobre blanco; para las etiquetas usamos la versión oscura de cada tono
+// (contraste 3.4:1 el verde, 5.4:1 el naranja, 5.3:1 el rojo).
 const COLOR_IN_TEXT = "#2f9e63";
+const COLOR_OVER_TEXT = "#9a5b12";
+const COLOR_HIGH_TEXT = "#b5493c";
 
 function dayColor(kcal: number, isToday: boolean): string {
-  if (isToday) return kcal > KCAL_TARGET ? COLOR_TODAY_OVER : COLOR_TODAY_IN;
   if (kcal > KCAL_HIGH) return COLOR_HIGH;
   if (kcal > KCAL_TARGET) return COLOR_OVER;
-  return COLOR_IN;
+  return isToday ? COLOR_TODAY_IN : COLOR_IN;
+}
+
+function dayTextColor(kcal: number): string {
+  if (kcal > KCAL_HIGH) return COLOR_HIGH_TEXT;
+  if (kcal > KCAL_TARGET) return COLOR_OVER_TEXT;
+  return COLOR_IN_TEXT;
 }
 
 function todayIso(): string {
@@ -146,7 +156,7 @@ export function FoodSection({
         textAnchor="middle"
         fontSize={11}
         fontWeight={700}
-        fill={over ? COLOR_OVER_TEXT : COLOR_IN_TEXT}
+        fill={dayTextColor(d.totalCalories)}
       >
         {text}
       </text>
@@ -205,12 +215,12 @@ export function FoodSection({
       </ResponsiveContainer>
 
       <p className="mt-2 text-xs text-zinc-400">
-        Banda verde = rango referencial 0–{formatNumber(KCAL_TARGET, 0)} kcal/día. En amarillo
-        los días por encima de la meta y en{" "}
-        <strong className="font-semibold text-[#b5493c]">rojo</strong> los que superan{" "}
-        {formatNumber(KCAL_HIGH, 0)} kcal. La barra de{" "}
-        <strong className="font-semibold text-zinc-500">hoy</strong> va en verde si sigues
-        dentro de la meta y en rojo si la superaste.
+        Banda verde = meta diaria de 0–{formatNumber(KCAL_TARGET, 0)} kcal. En{" "}
+        <strong className="font-semibold text-[#9a5b12]">naranja</strong> los días que pasan
+        la meta y en <strong className="font-semibold text-[#b5493c]">rojo</strong> los que
+        superan {formatNumber(KCAL_HIGH, 0)} kcal. La barra de{" "}
+        <strong className="font-semibold text-zinc-500">hoy</strong> va en un verde más
+        intenso mientras sigas dentro de la meta.
       </p>
 
       {/* grid-cols-1 en móvil: una columna minmax(0,1fr) acotada al contenedor.
@@ -236,7 +246,14 @@ export function FoodSection({
                   labelStyle={{ fontWeight: 600 }}
                   formatter={(value) => [`${formatNumber(Number(value), 0)} kcal`, "Promedio"]}
                 />
-                <Bar dataKey="avgCalories" name="Promedio" fill={COLOR_IN} radius={[6, 6, 0, 0]} />
+                {/* Mismas bandas que el gráfico de arriba: estos también son
+                    kcal de un día (promediadas), así que pintarlos siempre de
+                    verde escondería los días de la semana que se pasan. */}
+                <Bar dataKey="avgCalories" name="Promedio" radius={[6, 6, 0, 0]}>
+                  {weekdayData.map((row) => (
+                    <Cell key={row.weekday} fill={dayColor(row.avgCalories, false)} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
