@@ -288,33 +288,67 @@ export function FoodSection({
         </div>
       </div>
 
-      <div className="mt-5 overflow-x-auto">
-        <h3 className="mb-2 text-sm font-semibold text-zinc-500">Últimas comidas</h3>
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b border-black/10 text-zinc-500">
-              <th className="py-2 pr-3 font-medium">Fecha</th>
-              <th className="py-2 pr-3 font-medium">Comida</th>
-              <th className="py-2 pr-3 font-medium text-right">Calorías</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entries.slice(0, 15).map((entry, i) => (
-              <tr
-                key={`${entry.date}-${entry.name}-${i}`}
-                className="border-b border-black/5 last:border-0 transition-colors hover:bg-black/[0.03]"
-              >
-                <td className="py-2 pr-3 whitespace-nowrap">{shortDay(entry.date.slice(0, 10))}</td>
-                <td className="py-2 pr-3">{entry.name || "—"}</td>
-                <td className="py-2 pr-3 whitespace-nowrap text-right tabular-nums">
-                  {entry.calories != null ? `${formatNumber(entry.calories, 0)} kcal` : "—"}
-                </td>
+      <div className="mt-5">
+        <h3 className="mb-2 text-sm font-semibold text-zinc-500">
+          Comidas del periodo{" "}
+          <span className="font-normal text-zinc-400">({entries.length})</span>
+        </h3>
+        {/* Se listan TODAS las comidas del periodo, pero dentro de un contenedor
+            con scroll propio: con "Todo" seleccionado son cientos de filas y sin
+            el tope empujarían la sección de macros fuera de la pantalla. El
+            encabezado va sticky para no perder de vista las columnas. */}
+        <div className="max-h-[460px] overflow-auto rounded-xl border border-black/10">
+          <table className="w-full min-w-[680px] text-left text-sm">
+            <thead className="sticky top-0 z-10 bg-white">
+              <tr className="border-b border-black/10 text-zinc-500">
+                <th className="py-2 pl-3 pr-3 font-medium">Fecha</th>
+                <th className="py-2 pr-3 font-medium">Comida</th>
+                <th className="py-2 pr-3 font-medium text-right whitespace-nowrap">Calorías</th>
+                <th className="py-2 pr-3 font-medium text-right whitespace-nowrap">Prot.</th>
+                <th className="py-2 pr-3 font-medium text-right whitespace-nowrap">Carbs</th>
+                <th className="py-2 pr-3 font-medium text-right whitespace-nowrap">Grasas</th>
+                <th className="py-2 pr-3 font-medium text-right whitespace-nowrap">Fibra</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {entries.map((entry, i) => (
+                <tr
+                  key={`${entry.date}-${entry.name}-${i}`}
+                  className="border-b border-black/5 last:border-0 transition-colors hover:bg-black/[0.03]"
+                >
+                  <td className="py-2 pl-3 pr-3 whitespace-nowrap align-top">
+                    {shortDay(entry.date.slice(0, 10))}
+                  </td>
+                  <td className="py-2 pr-3">{entry.name || "—"}</td>
+                  <td className="py-2 pr-3 whitespace-nowrap text-right align-top tabular-nums">
+                    {entry.calories != null ? `${formatNumber(entry.calories, 0)} kcal` : "—"}
+                  </td>
+                  <MacroCell grams={entry.protein} />
+                  <MacroCell grams={entry.carbs} />
+                  <MacroCell grams={entry.fat} />
+                  <MacroCell grams={entry.fiber} />
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </SectionCard>
+  );
+}
+
+// Celda de macro en gramos. La mayoría del histórico no los tiene, así que el
+// hueco se marca con un guion tenue en vez de un 0, que se leería como "comí
+// cero gramos" en vez de "no lo anoté".
+function MacroCell({ grams }: { grams: number | null }) {
+  return (
+    <td className="py-2 pr-3 whitespace-nowrap text-right align-top tabular-nums">
+      {grams != null ? (
+        `${formatNumber(grams, 0)} g`
+      ) : (
+        <span className="text-zinc-300">—</span>
+      )}
+    </td>
   );
 }
 

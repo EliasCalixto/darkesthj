@@ -12,6 +12,7 @@ import {
 import { formatNumber } from "@/lib/format";
 import { KCAL_PER_GRAM } from "@/lib/stats";
 import type { FoodDay, MacroSplit } from "@/lib/types";
+import { KCAL_TARGET } from "./FoodSection";
 import { SectionCard } from "./SectionCard";
 
 // Paleta categórica de los tres macros. Validada con el validador de dataviz
@@ -31,7 +32,17 @@ const MACRO_COLORS = {
   fat: "#7d6ab8",
 } as const;
 
+// Metas diarias por macro. Notion no las guarda, así que se derivan de la meta
+// de calorías (KCAL_TARGET) con un reparto equilibrado 25/45/30 — el rango
+// habitual para una dieta general. Al colgar de KCAL_TARGET se recalculan solas
+// si cambia la meta de kcal; si quieres otro reparto, se toca solo esto.
+const MACRO_TARGET_PCT = { protein: 0.25, carbs: 0.45, fat: 0.3 } as const;
+
 const FIBER_TARGET = 25; // g/día, referencia habitual para adultos
+
+function macroTargetGrams(key: MacroKey): number {
+  return (KCAL_TARGET * MACRO_TARGET_PCT[key]) / KCAL_PER_GRAM[key];
+}
 
 type MacroKey = keyof typeof MACRO_COLORS;
 
@@ -168,17 +179,15 @@ export function MacroSection({
           <MacroKpi
             key={key}
             label={label}
-            value={formatNumber(perDay(grams[key]), 0)}
-            unit="g/día"
-            sub={`${formatNumber(grams[key] * KCAL_PER_GRAM[key], 0)} kcal en total`}
+            value={perDay(grams[key])}
+            target={macroTargetGrams(key)}
             color={MACRO_COLORS[key]}
           />
         ))}
         <MacroKpi
           label="Fibra"
-          value={formatNumber(perDay(split.fiberGrams), 0)}
-          unit="g/día"
-          sub={`referencia ${FIBER_TARGET} g/día`}
+          value={perDay(split.fiberGrams)}
+          target={FIBER_TARGET}
           // La fibra no es parte del reparto (es un carbohidrato y se
           // duplicaría), así que no lleva color de serie.
           color={null}
@@ -189,7 +198,11 @@ export function MacroSection({
         Los porcentajes salen de convertir los gramos a energía ({KCAL_PER_GRAM.protein} kcal/g
         proteína y carbohidratos, {KCAL_PER_GRAM.fat} kcal/g grasas), que suman{" "}
         {formatNumber(split.macroKcal, 0)} kcal. La fibra se muestra aparte porque ya va
-        contada dentro de los carbohidratos.
+        contada dentro de los carbohidratos. Las metas por macro no vienen de Notion: se
+        reparten los {formatNumber(KCAL_TARGET, 0)} kcal de la meta diaria en{" "}
+        {Math.round(MACRO_TARGET_PCT.protein * 100)}% proteína,{" "}
+        {Math.round(MACRO_TARGET_PCT.carbs * 100)}% carbohidratos y{" "}
+        {Math.round(MACRO_TARGET_PCT.fat * 100)}% grasas.
       </p>
 
       {chartData.length > 0 && (
@@ -232,19 +245,22 @@ export function MacroSection({
   );
 }
 
+// Promedio diario del nutriente contra su meta. La barra es un medidor simple
+// (un solo valor frente a un tope), no una serie: por eso va del color del
+// macro sobre una pista gris y no entra en la paleta categórica.
 function MacroKpi({
   label,
   value,
-  unit,
-  sub,
+  target,
   color,
 }: {
   label: string;
-  value: string;
-  unit: string;
-  sub: string;
+  value: number;
+  target: number;
   color: string | null;
 }) {
+  const ratio = target > 0 ? value / target : 0;
+  const diff = value - target;
   return (
     <div className="rounded-xl border border-black/10 bg-white p-4 shadow-sm">
       <p className="flex items-center gap-1.5 text-sm text-zinc-500">
@@ -258,10 +274,33 @@ function MacroKpi({
         {label}
       </p>
       <p className="mt-1 text-2xl font-semibold tabular-nums">
-        {value}
-        <span className="ml-1 text-sm font-normal text-zinc-400">{unit}</span>
+        {formatNumber(value, 0)}
+        <span className="ml-1 text-sm font-normal text-zinc-400">g/día</span>
       </p>
-      <p className="mt-1 text-xs text-zinc-400">{sub}</p>
+
+      <div
+        className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-zinc-100"
+        role="img"
+        aria-label={`${formatNumber(value, 0)} de ${formatNumber(target, 0)} g/día`}
+      >
+        <div
+          className="h-full rounded-full"
+          // Se corta al 100%: pasado el tope la barra ya está llena y el exceso
+          // lo dice la cifra de abajo.
+          style={{
+            width: `${Math.min(ratio, 1) * 100}%`,
+            background: color ?? "#a1a1aa",
+          }}
+        />
+      </div>
+
+      <p className="mt-1.5 text-xs tabular-nums text-zinc-400">
+        meta {formatNumber(target, 0)} g/día
+        <span className="ml-1 text-zinc-500">
+          ({diff >= 0 ? "+" : "−"}
+          {formatNumber(Math.abs(diff), 0)})
+        </span>
+      </p>
     </div>
   );
 }
