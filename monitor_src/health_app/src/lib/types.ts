@@ -55,6 +55,7 @@ export type FoodEntry = {
   carbs: number | null;
   fat: number | null;
   fiber: number | null;
+  sugar: number | null;
 };
 
 export type FoodDay = {
@@ -68,6 +69,7 @@ export type FoodDay = {
   carbs: number;
   fat: number;
   fiber: number;
+  sugar: number;
   macroCount: number;
 };
 
@@ -79,6 +81,7 @@ export type MacroSplit = {
   carbsGrams: number;
   fatGrams: number;
   fiberGrams: number;
+  sugarGrams: number;
   proteinPct: number;
   carbsPct: number;
   fatPct: number;

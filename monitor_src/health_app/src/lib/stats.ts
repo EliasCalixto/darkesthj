@@ -142,9 +142,10 @@ export function summarizeFoodByDay(entries: FoodEntry[]): FoodDay[] {
         protein: sum(withMacros.map((e) => e.protein)),
         carbs: sum(withMacros.map((e) => e.carbs)),
         fat: sum(withMacros.map((e) => e.fat)),
-        // La fibra sí se suma de todas las comidas que la traigan: no participa
-        // del reparto, solo se muestra como total aparte.
+        // Fibra y azúcar sí se suman de todas las comidas que las traigan: no
+        // participan del reparto, solo se muestran como totales aparte.
         fiber: sum(list.map((e) => e.fiber)),
+        sugar: sum(list.map((e) => e.sugar)),
         macroCount: withMacros.length,
       };
     })
@@ -177,6 +178,7 @@ export function summarizeMacros(entries: FoodEntry[]): MacroSplit | null {
     carbsGrams,
     fatGrams,
     fiberGrams: sum(entries.map((e) => e.fiber)),
+    sugarGrams: sum(entries.map((e) => e.sugar)),
     proteinPct: pct(proteinKcal),
     carbsPct: pct(carbsKcal),
     fatPct: pct(fatKcal),

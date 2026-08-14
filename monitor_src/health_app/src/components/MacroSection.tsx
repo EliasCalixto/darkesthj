@@ -13,7 +13,6 @@ import {
 import { formatNumber } from "@/lib/format";
 import { KCAL_PER_GRAM } from "@/lib/stats";
 import type { FoodDay, MacroSplit } from "@/lib/types";
-import { KCAL_TARGET } from "./FoodSection";
 import { SectionCard } from "./SectionCard";
 
 // Paleta categórica de los tres macros. Validada con el validador de dataviz
@@ -33,17 +32,20 @@ const MACRO_COLORS = {
   fat: "#7d6ab8",
 } as const;
 
-// Metas diarias por macro. Notion no las guarda, así que se derivan de la meta
-// de calorías (KCAL_TARGET) con un reparto equilibrado 25/45/30 — el rango
-// habitual para una dieta general. Al colgar de KCAL_TARGET se recalculan solas
-// si cambia la meta de kcal; si quieres otro reparto, se toca solo esto.
-const MACRO_TARGET_PCT = { protein: 0.25, carbs: 0.45, fat: 0.3 } as const;
-
-const FIBER_TARGET = 25; // g/día, referencia habitual para adultos
-
-function macroTargetGrams(key: MacroKey): number {
-  return (KCAL_TARGET * MACRO_TARGET_PCT[key]) / KCAL_PER_GRAM[key];
-}
+// Metas diarias fijadas por el usuario (no se derivan de KCAL_TARGET ni salen
+// de Notion). Van junto a la de calorías en FoodSection: si cambia una, revisa
+// la otra.
+//
+// Ojo: en energía estas metas suman 100·4 + 180·4 + 50·9 = 1570 kcal, 80 por
+// debajo de la meta de 1650. No es un error de cálculo aquí, es cómo están
+// fijadas; solo significa que cumplir los tres macros deja algo de margen.
+const NUTRIENT_TARGETS = {
+  protein: 100,
+  carbs: 180,
+  fat: 50,
+  fiber: 30,
+  sugar: 50,
+} as const;
 
 type MacroKey = keyof typeof MACRO_COLORS;
 
@@ -179,22 +181,28 @@ export function MacroSection({
         ))}
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-5">
         {MACROS.map(({ key, label }) => (
           <MacroKpi
             key={key}
             label={label}
             value={perDay(grams[key])}
-            target={macroTargetGrams(key)}
+            target={NUTRIENT_TARGETS[key]}
             color={MACRO_COLORS[key]}
           />
         ))}
+        {/* Fibra y azúcar no son parte del reparto (son carbohidratos y se
+            duplicarían), así que no llevan color de serie. */}
         <MacroKpi
           label="Fibra"
           value={perDay(split.fiberGrams)}
-          target={FIBER_TARGET}
-          // La fibra no es parte del reparto (es un carbohidrato y se
-          // duplicaría), así que no lleva color de serie.
+          target={NUTRIENT_TARGETS.fiber}
+          color={null}
+        />
+        <MacroKpi
+          label="Azúcar"
+          value={perDay(split.sugarGrams)}
+          target={NUTRIENT_TARGETS.sugar}
           color={null}
         />
       </div>
@@ -202,12 +210,8 @@ export function MacroSection({
       <p className="mt-3 text-xs text-zinc-400">
         Los porcentajes salen de convertir los gramos a energía ({KCAL_PER_GRAM.protein} kcal/g
         proteína y carbohidratos, {KCAL_PER_GRAM.fat} kcal/g grasas), que suman{" "}
-        {formatNumber(split.macroKcal, 0)} kcal. La fibra se muestra aparte porque ya va
-        contada dentro de los carbohidratos. Las metas por macro no vienen de Notion: se
-        reparten los {formatNumber(KCAL_TARGET, 0)} kcal de la meta diaria en{" "}
-        {Math.round(MACRO_TARGET_PCT.protein * 100)}% proteína,{" "}
-        {Math.round(MACRO_TARGET_PCT.carbs * 100)}% carbohidratos y{" "}
-        {Math.round(MACRO_TARGET_PCT.fat * 100)}% grasas.
+        {formatNumber(split.macroKcal, 0)} kcal. Fibra y azúcar se muestran aparte porque ya
+        van contadas dentro de los carbohidratos.
       </p>
 
       {chartData.length > 0 && (

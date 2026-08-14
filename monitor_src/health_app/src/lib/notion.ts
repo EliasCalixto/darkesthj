@@ -142,6 +142,7 @@ export async function getFood(): Promise<FoodEntry[]> {
         carbs: getNumber(props, "Carbohidratos (g)"),
         fat: getNumber(props, "Grasas (g)"),
         fiber: getNumber(props, "Fibra (g)"),
+        sugar: getNumber(props, "Azúcares (g)"),
       };
     })
     .filter((entry) => entry.date !== "")

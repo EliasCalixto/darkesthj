@@ -354,6 +354,7 @@ export function FoodSection({
                 <th className="py-2 pr-3 font-medium text-right whitespace-nowrap">Carbs</th>
                 <th className="py-2 pr-3 font-medium text-right whitespace-nowrap">Grasas</th>
                 <th className="py-2 pr-3 font-medium text-right whitespace-nowrap">Fibra</th>
+                <th className="py-2 pr-3 font-medium text-right whitespace-nowrap">Azúcar</th>
               </tr>
             </thead>
             <tbody>
@@ -373,6 +374,7 @@ export function FoodSection({
                   <MacroCell grams={entry.carbs} />
                   <MacroCell grams={entry.fat} />
                   <MacroCell grams={entry.fiber} />
+                  <MacroCell grams={entry.sugar} />
                 </tr>
               ))}
             </tbody>
