@@ -162,3 +162,12 @@ body {
 .notion-content tbody tr:nth-child(even) td {
   background: #fcfcfd;
 }
+
+/* Al pulsar una barra (los gráficos filtran por día) el navegador dibuja un
+   contorno grueso alrededor de una capa interna de recharts, no de la barra, y
+   se ve como un recuadro negro sobre todo el gráfico. Esa capa lleva
+   tabindex="-1", o sea que no se alcanza con teclado: quitarle el contorno no
+   deja a nadie sin indicador de foco. */
+.recharts-wrapper g[tabindex="-1"]:focus {
+  outline: none;
+}

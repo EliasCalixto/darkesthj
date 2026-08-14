@@ -4,6 +4,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -62,10 +63,14 @@ export function MacroSection({
   split,
   days,
   totalMeals,
+  selectedDay,
+  onSelectDay,
 }: {
   split: MacroSplit | null;
   days: FoodDay[];
   totalMeals: number;
+  selectedDay: string | null;
+  onSelectDay: (date: string) => void;
 }) {
   if (!split) {
     return (
@@ -207,7 +212,14 @@ export function MacroSection({
 
       {chartData.length > 0 && (
         <div className="mt-6">
-          <h3 className="mb-3 text-sm font-semibold text-zinc-500">Gramos por día</h3>
+          <h3 className="mb-3 text-sm font-semibold text-zinc-500">
+            Gramos por día{" "}
+            <span className="font-normal text-zinc-400">
+              {selectedDay
+                ? `· filtrando ${shortDay(selectedDay)}`
+                : "· pulsa una barra para filtrar ese día"}
+            </span>
+          </h3>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={chartData} margin={{ top: 8, right: 12, bottom: 0, left: -8 }}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-black/10" />
@@ -235,7 +247,20 @@ export function MacroSection({
                   // Con pocos días registrados recharts estira las barras a
                   // todo el ancho disponible y quedan enormes.
                   maxBarSize={72}
-                />
+                  // Recharts entrega el punto en `payload`, no en la raíz.
+                  onClick={(data) => {
+                    const date = (data?.payload as { date?: string } | undefined)?.date;
+                    if (date) onSelectDay(date);
+                  }}
+                  className="cursor-pointer"
+                >
+                  {chartData.map((d) => (
+                    <Cell
+                      key={d.date}
+                      fillOpacity={selectedDay && d.date !== selectedDay ? 0.28 : 1}
+                    />
+                  ))}
+                </Bar>
               ))}
             </BarChart>
           </ResponsiveContainer>

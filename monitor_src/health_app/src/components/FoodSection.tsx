@@ -99,9 +99,13 @@ function weekdayStats(days: FoodDay[]) {
 export function FoodSection({
   days,
   entries,
+  selectedDay,
+  onSelectDay,
 }: {
   days: FoodDay[];
   entries: FoodEntry[];
+  selectedDay: string | null;
+  onSelectDay: (date: string) => void;
 }) {
   if (days.length === 0) {
     return (
@@ -116,8 +120,10 @@ export function FoodSection({
   const avgKcal = totalKcal / days.length;
   const highest = days.reduce((max, d) => (d.totalCalories > max.totalCalories ? d : max), days[0]);
   const entriesWithCalories = entries.filter((entry) => entry.calories != null);
-  const avgMealKcal =
-    entriesWithCalories.length > 0 ? totalKcal / entriesWithCalories.length : null;
+  // Cuánto me pasé de la meta en todo el periodo: los excesos suman y los
+  // déficits restan, así un día flojo compensa a uno pasado. Solo entran días
+  // con registro; contar los días sin comidas los tomaría como déficit entero.
+  const deltaKcal = days.reduce((sum, d) => sum + (d.totalCalories - KCAL_TARGET), 0);
   const daysInTarget = days.filter((d) => d.totalCalories <= KCAL_TARGET).length;
   const targetRate = Math.round((daysInTarget / days.length) * 100);
   const weekdayData = weekdayStats(days);
@@ -129,6 +135,15 @@ export function FoodSection({
     label: shortDay(d.date),
     isToday: d.date === today,
   }));
+
+  // La tabla es lo único que acota el día elegido; KPIs y gráficos siguen
+  // describiendo el periodo para poder comparar y saltar a otro día.
+  const visibleEntries = selectedDay
+    ? entries.filter((e) => e.date.slice(0, 10) === selectedDay)
+    : entries;
+  const selectedDayTotal = selectedDay
+    ? (days.find((d) => d.date === selectedDay)?.totalCalories ?? 0)
+    : 0;
 
   // Etiqueta "Hoy" sobre la barra del día actual: cuánto falta para la meta o
   // cuánto me pasé. Recharts la invoca por cada barra; devolvemos null salvo hoy.
@@ -172,9 +187,9 @@ export function FoodSection({
         <FoodKpi label="Promedio diario" value={`${formatNumber(avgKcal, 0)}`} unit="kcal" />
         <FoodKpi label="Total del periodo" value={`${formatNumber(totalKcal, 0)}`} unit="kcal" />
         <FoodKpi
-          label="Promedio por comida"
-          value={avgMealKcal != null ? `${formatNumber(avgMealKcal, 0)}` : "—"}
-          unit="kcal"
+          label="Balance vs meta"
+          value={`${deltaKcal >= 0 ? "+" : "−"}${formatNumber(Math.abs(deltaKcal), 0)}`}
+          unit={`kcal · ${days.length} día(s)`}
         />
         <FoodKpi
           label="Día más cargado"
@@ -205,10 +220,26 @@ export function FoodSection({
             labelStyle={{ fontWeight: 600 }}
             formatter={(value) => [`${formatNumber(Number(value), 0)} kcal`, "Total"]}
           />
-          <Bar dataKey="totalCalories" name="kcal" radius={[6, 6, 0, 0]}>
+          <Bar
+            dataKey="totalCalories"
+            name="kcal"
+            radius={[6, 6, 0, 0]}
+            // Recharts entrega el punto en `payload`, no en la raíz del evento.
+            onClick={(data) => {
+              const date = (data?.payload as { date?: string } | undefined)?.date;
+              if (date) onSelectDay(date);
+            }}
+            className="cursor-pointer"
+          >
             <LabelList dataKey="totalCalories" content={renderTodayLabel} />
             {chartData.map((entry) => (
-              <Cell key={entry.date} fill={dayColor(entry.totalCalories, entry.isToday)} />
+              <Cell
+                key={entry.date}
+                fill={dayColor(entry.totalCalories, entry.isToday)}
+                // Con un día elegido el resto se atenúa; sin selección van todas
+                // a opacidad plena.
+                fillOpacity={selectedDay && entry.date !== selectedDay ? 0.28 : 1}
+              />
             ))}
           </Bar>
         </BarChart>
@@ -289,10 +320,25 @@ export function FoodSection({
       </div>
 
       <div className="mt-5">
-        <h3 className="mb-2 text-sm font-semibold text-zinc-500">
-          Comidas del periodo{" "}
-          <span className="font-normal text-zinc-400">({entries.length})</span>
-        </h3>
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <h3 className="text-sm font-semibold text-zinc-500">
+            {selectedDay ? `Comidas del ${shortDay(selectedDay)}` : "Comidas del periodo"}{" "}
+            <span className="font-normal text-zinc-400">({visibleEntries.length})</span>
+          </h3>
+          {selectedDay ? (
+            <button
+              type="button"
+              onClick={() => onSelectDay(selectedDay)}
+              className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-200"
+            >
+              {formatNumber(selectedDayTotal, 0)} kcal · quitar filtro ✕
+            </button>
+          ) : (
+            <span className="text-xs text-zinc-400">
+              Pulsa una barra de los gráficos para ver solo ese día
+            </span>
+          )}
+        </div>
         {/* Se listan TODAS las comidas del periodo, pero dentro de un contenedor
             con scroll propio: con "Todo" seleccionado son cientos de filas y sin
             el tope empujarían la sección de macros fuera de la pantalla. El
@@ -311,7 +357,7 @@ export function FoodSection({
               </tr>
             </thead>
             <tbody>
-              {entries.map((entry, i) => (
+              {visibleEntries.map((entry, i) => (
                 <tr
                   key={`${entry.date}-${entry.name}-${i}`}
                   className="border-b border-black/5 last:border-0 transition-colors hover:bg-black/[0.03]"

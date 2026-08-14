@@ -3,6 +3,7 @@
 // → computePeriod) para que ambos dashboards se comporten igual.
 
 export type Period =
+  | "today"
   | "this-week"
   | "this-month"
   | "last-month"
@@ -13,6 +14,7 @@ export type Period =
   | "all";
 
 export const PERIOD_OPTIONS: { value: Period; label: string }[] = [
+  { value: "today", label: "Hoy" },
   { value: "this-week", label: "Esta semana" },
   { value: "this-month", label: "Este mes" },
   { value: "last-month", label: "Mes anterior" },
@@ -28,6 +30,11 @@ export type DateRange = { from: Date | null; to: Date | null };
 // Mismos límites que Finance: meses anclados al día 1, semana anclada al lunes.
 export function computePeriod(period: Period, now = new Date()): DateRange {
   switch (period) {
+    case "today":
+      return {
+        from: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+        to: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59),
+      };
     case "this-week": {
       const dow = (now.getDay() + 6) % 7; // 0 = lunes … 6 = domingo
       const from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - dow);

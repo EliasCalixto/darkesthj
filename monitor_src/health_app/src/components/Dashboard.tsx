@@ -84,6 +84,10 @@ export function Dashboard({ gate }: { gate: Gate<FoodPayload> }) {
 
 function FoodPanel({ food }: { food: FoodEntry[] }) {
   const [period, setPeriod] = useState<Period>("this-month");
+  // Día concreto elegido pulsando una barra de cualquiera de los dos gráficos.
+  // Solo acota la lista de comidas: los gráficos siguen mostrando el periodo
+  // completo para poder saltar de un día a otro sin deshacer el filtro.
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
   const range = useMemo(() => computePeriod(period), [period]);
   const fFood = useMemo(
@@ -94,12 +98,23 @@ function FoodPanel({ food }: { food: FoodEntry[] }) {
   const foodDays = useMemo(() => summarizeFoodByDay(fFood), [fFood]);
   const macros = useMemo(() => summarizeMacros(fFood), [fFood]);
 
+  // Al cambiar de periodo el día elegido puede quedar fuera; en ese caso se
+  // descarta para no dejar la tabla vacía sin explicación.
+  const activeDay =
+    selectedDay && foodDays.some((d) => d.date === selectedDay) ? selectedDay : null;
+
   const periodLabel = PERIOD_OPTIONS.find((o) => o.value === period)?.label ?? "";
 
   const avgKcal = avg(foodDays.map((d) => d.totalCalories));
-  const mealCalories = fFood.map((entry) => entry.calories).filter((v): v is number => v != null);
-  const avgMealKcal = avg(mealCalories);
   const today = todayIso();
+
+  // Cuánto me he pasado de la meta en el periodo: se suman los excesos y se
+  // restan los déficits de cada día con registro, así un día flojo compensa a
+  // uno pasado. Solo cuentan los días con comidas anotadas — incluir los días
+  // sin registro los contaría como déficit de una meta entera.
+  const deltaKcal = foodDays.length
+    ? foodDays.reduce((sum, d) => sum + (d.totalCalories - KCAL_TARGET), 0)
+    : null;
   const todayCalories = foodDays.find((d) => d.date === today)?.totalCalories ?? null;
   const daysInTarget = foodDays.filter((d) => d.totalCalories <= KCAL_TARGET).length;
   const targetRate =
@@ -122,17 +137,24 @@ function FoodPanel({ food }: { food: FoodEntry[] }) {
               : "good",
     },
     {
-      icon: "🥗",
-      title: "Promedio por comida",
-      value: avgMealKcal != null ? formatNumber(avgMealKcal, 0) : "—",
+      icon: "⚖️",
+      title: "Balance vs meta",
+      value:
+        deltaKcal == null
+          ? "—"
+          : `${deltaKcal >= 0 ? "+" : "−"}${formatNumber(Math.abs(deltaKcal), 0)}`,
       unit: "kcal",
-      sub: `${fFood.length} comida(s) registradas`,
+      sub:
+        deltaKcal == null
+          ? "Sin días registrados"
+          : `Suma de excesos y déficits de ${foodDays.length} día(s)`,
       status:
-        avgMealKcal == null
+        deltaKcal == null
           ? "neutral"
-          : avgMealKcal <= 700
+          : deltaKcal <= 0
             ? "good"
-            : avgMealKcal <= 900
+            : // Un día entero de exceso acumulado ya es mucho; entre medias, aviso.
+              deltaKcal <= KCAL_TARGET
               ? "warn"
               : "bad",
     },
@@ -189,9 +211,20 @@ function FoodPanel({ food }: { food: FoodEntry[] }) {
 
       <HealthSummary items={summaryItems} />
 
-      <FoodSection days={foodDays} entries={fFood} />
+      <FoodSection
+        days={foodDays}
+        entries={fFood}
+        selectedDay={activeDay}
+        onSelectDay={(date) => setSelectedDay((prev) => (prev === date ? null : date))}
+      />
 
-      <MacroSection split={macros} days={foodDays} totalMeals={fFood.length} />
+      <MacroSection
+        split={macros}
+        days={foodDays}
+        totalMeals={fFood.length}
+        selectedDay={activeDay}
+        onSelectDay={(date) => setSelectedDay((prev) => (prev === date ? null : date))}
+      />
     </>
   );
 }
