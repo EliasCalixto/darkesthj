@@ -38,6 +38,13 @@ const CATEGORY_ORDER = [
   "Cashout",
 ];
 
+// Categorías que se juntan en una sola barra, SOLO en el gráfico de totales por
+// categoría (renderExpenseSumBars). El donut, la evolución mensual, los chips y
+// la tabla las siguen tratando por separado, que es donde interesa el detalle.
+// La barra agrupada ocupa la posición y el color del primer miembro según
+// CATEGORY_ORDER, y el tooltip desglosa cuánto pone cada uno.
+const SUM_BARS_GROUPS = [["Home", "Personal"]];
+
 const DARK_GRAY = "#3a3a3c";
 const MUTED_GRAY = "#6e6e73"; // for soft labels in legends / small text
 const DONUT_LABEL_COLOR = "#4a4a4d"; // donut percentage labels: a bit darker for readability
@@ -422,19 +429,34 @@ function buildCategoryChips() {
     chip.dataset.cat = cat;
     chip.textContent = cat;
     chip.style.background = CATEGORY_COLORS[cat] || "#cccccc";
-    chip.addEventListener("click", () => {
-      if (state.selectedCategories.has(cat)) {
-        state.selectedCategories.delete(cat);
-        chip.classList.add("off");
-      } else {
-        state.selectedCategories.add(cat);
-        chip.classList.remove("off");
-      }
-      applyAndRender();
-    });
+    chip.addEventListener("click", () => toggleCategoryFocus(cat));
     wrap.appendChild(chip);
   }
 }
+
+// Enfoque por categoría, compartido por los chips y por las leyendas del donut
+// y de la evolución mensual. Conjunto vacío = sin filtro, se ven todas.
+function toggleCategoryFocus(cat) {
+  if (!cat || !CATEGORY_ORDER.includes(cat)) return;
+  if (state.selectedCategories.has(cat)) state.selectedCategories.delete(cat);
+  else state.selectedCategories.add(cat);
+  syncCategoryChips();
+  applyAndRender();
+}
+
+// Los chips son la representación visible del enfoque; al cambiarlo desde una
+// leyenda hay que repintarlos o quedarían desincronizados.
+function syncCategoryChips() {
+  for (const chip of document.querySelectorAll("#category-chips .chip")) {
+    chip.classList.toggle("off", !state.selectedCategories.has(chip.dataset.cat));
+  }
+}
+
+// Reemplaza el onClick por defecto de Chart.js en las leyendas, que oculta la
+// serie pulsada. Aquí hace lo contrario: enfoca esa categoría en todo el panel.
+const focusLegendOnClick = (getCategory) => (_e, item) => {
+  toggleCategoryFocus(getCategory(item));
+};
 
 // ---------- Period filter ----------
 
@@ -597,6 +619,8 @@ function renderExpenseDonut(expenses) {
       plugins: {
         legend: {
           position: "right",
+          // En el donut cada leyenda es una porción: su texto ES la categoría.
+          onClick: focusLegendOnClick((item) => item.text),
           labels: {
             usePointStyle: true,
             pointStyle: "circle",
@@ -633,9 +657,25 @@ function renderExpenseSumBars(expenses) {
   destroyChart("expSumBars");
 
   const totals = sumByCategoryOrdered(expenses);
-  const labels = CATEGORY_ORDER;
-  const values = CATEGORY_ORDER.map((c) => totals.get(c) || 0);
-  const colors = CATEGORY_ORDER.map((c) => CATEGORY_COLORS[c]);
+
+  // Recorre el orden normal, pero al llegar al primer miembro de un grupo emite
+  // una sola barra con la suma y salta el resto de miembros.
+  const labels = [];
+  const values = [];
+  const colors = [];
+  const barMembers = []; // miembros de cada barra; solo para el tooltip
+  const absorbed = new Set();
+
+  for (const cat of CATEGORY_ORDER) {
+    if (absorbed.has(cat)) continue;
+    const group = SUM_BARS_GROUPS.find((g) => g.includes(cat));
+    const members = group ?? [cat];
+    for (const m of members) absorbed.add(m);
+    labels.push(members.join(" + "));
+    values.push(members.reduce((sum, m) => sum + (totals.get(m) || 0), 0));
+    colors.push(CATEGORY_COLORS[members[0]]);
+    barMembers.push(members.length > 1 ? members : null);
+  }
 
   const ctx = document.getElementById("exp-sum-bars");
   state.charts.expSumBars = new Chart(ctx, {
@@ -659,7 +699,15 @@ function renderExpenseSumBars(expenses) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          callbacks: { label: (c) => `${c.label}: ${fmtMoney(c.parsed.y)}` },
+          callbacks: {
+            label: (c) => `${c.label}: ${fmtMoney(c.parsed.y)}`,
+            // En la barra agrupada, desglosa cuánto pone cada categoría.
+            afterLabel: (c) => {
+              const members = barMembers[c.dataIndex];
+              if (!members) return undefined;
+              return members.map((m) => `   ${m}: ${fmtMoney(totals.get(m) || 0)}`);
+            },
+          },
         },
         datalabels: {
           display: (ctx) => (ctx.dataset.data[ctx.dataIndex] || 0) > 0,
@@ -766,6 +814,8 @@ function renderExpenseEvolution(expenses, { from, to }) {
       plugins: {
         legend: {
           position: "bottom",
+          // En la evolución cada leyenda es un dataset por categoría.
+          onClick: focusLegendOnClick((item) => item.text),
           labels: {
             usePointStyle: true,
             pointStyle: "circle",
