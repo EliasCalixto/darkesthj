@@ -38,12 +38,32 @@ const CATEGORY_ORDER = [
   "Cashout",
 ];
 
-// Categorías que se juntan en una sola barra, SOLO en el gráfico de totales por
-// categoría (renderExpenseSumBars). El donut, la evolución mensual, los chips y
-// la tabla las siguen tratando por separado, que es donde interesa el detalle.
-// La barra agrupada ocupa la posición y el color del primer miembro según
-// CATEGORY_ORDER, y el tooltip desglosa cuánto pone cada uno.
-const SUM_BARS_GROUPS = [["Home", "Personal"]];
+// Orden y agrupación propios del gráfico de totales por categoría
+// (renderExpenseSumBars). Cada entrada es una barra: una cadena es una
+// categoría suelta y un array son varias sumadas en una sola barra, que toma el
+// color de su primer miembro y desglosa el reparto en el tooltip.
+//
+// Es independiente de CATEGORY_ORDER a propósito: ahí manda el panel "Groups"
+// de Notion, que gobierna donut, evolución mensual y chips, donde las
+// categorías se ven detalladas. Aquí el orden se ajusta a lo que se quiere leer
+// en las barras.
+const SUM_BARS_LAYOUT = [
+  "Savings",
+  "Setup",
+  ["Home", "Personal"],
+  "Studies",
+  "Enjoy",
+  "Losses",
+  "Fixed",
+  "Cashout",
+];
+
+// Una categoría que exista en CATEGORY_ORDER pero que nadie haya añadido arriba
+// se cuela al final, en vez de desaparecer del gráfico sin aviso.
+function sumBarsLayout() {
+  const placed = new Set(SUM_BARS_LAYOUT.flat());
+  return [...SUM_BARS_LAYOUT, ...CATEGORY_ORDER.filter((c) => !placed.has(c))];
+}
 
 const DARK_GRAY = "#3a3a3c";
 const MUTED_GRAY = "#6e6e73"; // for soft labels in legends / small text
@@ -658,19 +678,14 @@ function renderExpenseSumBars(expenses) {
 
   const totals = sumByCategoryOrdered(expenses);
 
-  // Recorre el orden normal, pero al llegar al primer miembro de un grupo emite
-  // una sola barra con la suma y salta el resto de miembros.
+  // Una barra por entrada del layout; las agrupadas suman a sus miembros.
   const labels = [];
   const values = [];
   const colors = [];
   const barMembers = []; // miembros de cada barra; solo para el tooltip
-  const absorbed = new Set();
 
-  for (const cat of CATEGORY_ORDER) {
-    if (absorbed.has(cat)) continue;
-    const group = SUM_BARS_GROUPS.find((g) => g.includes(cat));
-    const members = group ?? [cat];
-    for (const m of members) absorbed.add(m);
+  for (const slot of sumBarsLayout()) {
+    const members = Array.isArray(slot) ? slot : [slot];
     labels.push(members.join(" + "));
     values.push(members.reduce((sum, m) => sum + (totals.get(m) || 0), 0));
     colors.push(CATEGORY_COLORS[members[0]]);
