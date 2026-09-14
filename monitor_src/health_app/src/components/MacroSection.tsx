@@ -36,9 +36,10 @@ const MACRO_COLORS = {
 // de Notion). Van junto a la de calorías en FoodSection: si cambia una, revisa
 // la otra.
 //
-// Ojo: en energía estas metas suman 110·4 + 230·4 + 60·9 = 1900 kcal, 100 por
-// debajo de la meta de 2000. No es un error de cálculo aquí, es cómo están
-// fijadas; solo significa que cumplir los tres macros deja algo de margen.
+// Ojo: en energía estas metas suman 110·4 + 230·4 + 60·9 = 1900 kcal, que
+// coincide exacto con la meta diaria de KCAL_TARGET (FoodSection). No es
+// casualidad forzada por el código, es cómo están fijadas ambas; si se
+// cambia una, conviene revisar si la otra sigue teniendo sentido.
 const NUTRIENT_TARGETS = {
   protein: 110,
   carbs: 230,
