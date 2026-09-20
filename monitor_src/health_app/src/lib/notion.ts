@@ -40,6 +40,21 @@ function getNumber(properties: Properties, name: string): number | null {
   return prop.number;
 }
 
+// Como getNumber, pero tolera que el nombre real de la columna en Notion tenga
+// algo añadido después (p. ej. el usuario le puso la meta al lado del nombre:
+// "Calorías" pasó a "Calorías (1900)"). Busca por coincidencia exacta primero
+// y si no la halla, cae a la primera propiedad numérica cuyo nombre EMPIECE
+// por el prefijo dado, para no depender de que el sufijo se mantenga estable.
+function getNumberByPrefix(properties: Properties, prefix: string): number | null {
+  const exact = getNumber(properties, prefix);
+  if (exact != null) return exact;
+  // Si una propiedad con ese nombre exacto existe, el valor null es real
+  // (celda vacía o tipo distinto) y no un renombre: no seguir buscando.
+  if (properties[prefix]) return null;
+  const key = Object.keys(properties).find((k) => k.startsWith(prefix));
+  return key ? getNumber(properties, key) : null;
+}
+
 function getTitle(properties: Properties, name: string): string {
   const prop = properties[name];
   if (!prop || prop.type !== "title") return "";
@@ -137,12 +152,17 @@ export async function getFood(): Promise<FoodEntry[]> {
       return {
         name: getTitle(props, "Nombre"),
         date: getDate(props, "Date") ?? "",
-        calories: getNumber(props, "Calorías"),
-        protein: getNumber(props, "Proteína (g)"),
-        carbs: getNumber(props, "Carbohidratos (g)"),
-        fat: getNumber(props, "Grasas (g)"),
-        fiber: getNumber(props, "Fibra (g)"),
-        sugar: getNumber(props, "Azúcares (g)"),
+        // Prefijo, no nombre exacto: el usuario le puso la meta de cada
+        // nutriente al lado en Notion ("Calorías" -> "Calorías (1900)",
+        // "Proteína (g)" -> "Proteína (110g)"...), y probablemente lo vuelva a
+        // tocar cuando cambien las metas. Mientras el nombre siga empezando
+        // igual, esto no se rompe.
+        calories: getNumberByPrefix(props, "Calorías"),
+        protein: getNumberByPrefix(props, "Proteína"),
+        carbs: getNumberByPrefix(props, "Carbohidratos"),
+        fat: getNumberByPrefix(props, "Grasas"),
+        fiber: getNumberByPrefix(props, "Fibra"),
+        sugar: getNumberByPrefix(props, "Azúcares"),
       };
     })
     .filter((entry) => entry.date !== "")
