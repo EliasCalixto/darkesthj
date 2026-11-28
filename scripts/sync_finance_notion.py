@@ -21,6 +21,13 @@ NOTION_VERSION = "2022-06-28"
 API_BASE = "https://api.notion.com/v1"
 OUTPUT_PATH = Path(__file__).resolve().parent.parent / "monitor_src" / "finance" / "data.json"
 
+# Categorias que no salen de Notion: toda fila cuya columna "Category" sea una
+# de estas se descarta antes de escribir data.json, en cualquier database que
+# tenga esa columna (Expenses, CC). Asi el dashboard nunca las recibe, ni
+# siquiera cifradas. Ojo: los totales de "Resumen" son rollups/formulas que
+# Notion calcula sobre todas las filas, asi que las siguen sumando.
+EXCLUDED_CATEGORIES = frozenset({"Losses"})
+
 
 def _headers(token: str) -> dict[str, str]:
     return {
@@ -179,6 +186,26 @@ def serialize_row(page: dict) -> dict:
     return row
 
 
+def is_excluded(row: dict) -> bool:
+    category = row.get("Category")
+    values = category if isinstance(category, list) else [category]
+    return any(isinstance(v, str) and v in EXCLUDED_CATEGORIES for v in values)
+
+
+def drop_relation_ids(databases: list[dict], excluded_ids: set[str]) -> None:
+    """Quita de las columnas relation los ids de las filas descartadas.
+
+    Otras databases (p. ej. Resumen -> Expenses) listan esas filas por id; sin
+    esto quedaria en data.json la referencia a una fila que ya no esta.
+    """
+    for db in databases:
+        relation_cols = [name for name, ptype in db["schema"].items() if ptype == "relation"]
+        for row in db["rows"]:
+            for col in relation_cols:
+                if isinstance(row.get(col), list):
+                    row[col] = [rid for rid in row[col] if rid not in excluded_ids]
+
+
 def serialize_schema(db_meta: dict) -> dict:
     """Devuelve {nombre: tipo} para que el frontend sepa como renderizar cada columna."""
     schema: dict[str, str] = {}
@@ -199,17 +226,20 @@ def main() -> int:
     print(f"Encontradas {len(databases)} database(s)")
 
     out_databases = []
+    excluded_ids: set[str] = set()
     for db in databases:
         print(f"  -> {db['title']} ({db['id']})")
         meta = get_database_meta(db["id"], token)
-        rows = query_database(db["id"], token)
+        rows = [serialize_row(r) for r in query_database(db["id"], token)]
+        excluded_ids.update(r["_id"] for r in rows if is_excluded(r))
         title_text = _plain_text(meta.get("title", [])) or db["title"]
         out_databases.append({
             "id": db["id"],
             "title": title_text,
             "schema": serialize_schema(meta),
-            "rows": [serialize_row(r) for r in rows],
+            "rows": [r for r in rows if not is_excluded(r)],
         })
+    drop_relation_ids(out_databases, excluded_ids)
 
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(),

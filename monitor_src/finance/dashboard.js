@@ -16,10 +16,14 @@ const CATEGORY_COLORS = {
   Home: "#abb9d4",
   Personal: "#7a9cc6",
   Enjoy: "#b9f5c4",
-  Losses: "#fd9a9a",
   Fixed: "#f8ccad",
   Cashout: "#fef2cb",
 };
+
+// Categorías que el panel no muestra en ningún sitio: ni chips, ni gráficos,
+// ni tabla, ni conteos. scripts/sync_finance_notion.py ya las deja fuera de
+// data.json; este filtro cubre un data.json generado antes de ese cambio.
+const HIDDEN_CATEGORIES = new Set(["Losses"]);
 
 // Orden en que las categorías salen en donut, barras, líneas y chips. Replica
 // el panel "Groups" de Notion; si allá se reordena o se agrega una categoría,
@@ -33,7 +37,6 @@ const CATEGORY_ORDER = [
   "Home",
   "Personal",
   "Enjoy",
-  "Losses",
   "Fixed",
   "Cashout",
 ];
@@ -53,7 +56,6 @@ const SUM_BARS_LAYOUT = [
   ["Home", "Personal"],
   "Studies",
   "Enjoy",
-  "Losses",
   "Fixed",
   "Cashout",
 ];
@@ -69,7 +71,7 @@ const DARK_GRAY = "#3a3a3c";
 const MUTED_GRAY = "#6e6e73"; // for soft labels in legends / small text
 const DONUT_LABEL_COLOR = "#4a4a4d"; // donut percentage labels: a bit darker for readability
 const BAR_LABEL_COLOR = "#5a5a5e"; // numbers above bars
-const SOFT_RED = "#fd9a9a"; // Losses pastel
+const SOFT_RED = "#fd9a9a"; // rojo pastel: borde de la tarjeta Tot. Expenses
 const SOFT_GREEN = "#b9f5c4"; // Enjoy pastel
 
 const state = {
@@ -360,14 +362,16 @@ function onDataReady() {
     setStatus(`Missing databases: ${missing}`, true);
   }
 
-  state.expenses = (expDb?.rows || []).map((r) => ({
-    id: r._id,
-    url: r._url,
-    name: r.Name || "",
-    category: r.Category || "—",
-    date: getRowDate(r, "Date Created"),
-    price: typeof r.Price === "number" ? r.Price : 0,
-  }));
+  state.expenses = (expDb?.rows || [])
+    .filter((r) => !HIDDEN_CATEGORIES.has(r.Category))
+    .map((r) => ({
+      id: r._id,
+      url: r._url,
+      name: r.Name || "",
+      category: r.Category || "—",
+      date: getRowDate(r, "Date Created"),
+      price: typeof r.Price === "number" ? r.Price : 0,
+    }));
 
   state.incomes = (incDb?.rows || []).map((r) => ({
     id: r._id,
@@ -418,7 +422,7 @@ function resumenCard(label, value) {
   } else if (label === "Tot. Income") {
     borderColor = CATEGORY_COLORS.Enjoy;
   } else if (label === "Tot. Expenses") {
-    borderColor = CATEGORY_COLORS.Losses;
+    borderColor = SOFT_RED;
   }
 
   el.style.borderLeftColor = borderColor;
